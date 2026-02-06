@@ -3,93 +3,80 @@ import fs from 'fs';
 import path from 'path';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useCart } from '../../context/CartContext'; // استيراد السلة
 
 export default function ProductPage({ product }) {
-  // حالة لتغيير الصورة المعروضة عند النقر على الصور المصغرة
-  const [selectedImage, setSelectedImage] = useState(product.media.main_image);
+  const [selectedImage, setSelectedImage] = useState(product?.media?.main_image);
+  const { addToCart } = useCart(); // استخدام السلة
 
-  if (!product) return <div style={{ textAlign: 'center', padding: '50px' }}>المنتج غير موجود</div>;
+  if (!product) return <div>المنتج غير موجود</div>;
+
+  // إعداد بيانات السكيما (Schema.org)
+  const schemaData = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": product.title,
+    "image": [product.media.main_image, ...product.media.gallery],
+    "description": product.description,
+    "sku": product.id,
+    "brand": {
+      "@type": "Brand",
+      "name": "متجر الكويت"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": `https://yourstore.com/product/${product.id}`,
+      "priceCurrency": product.pricing.currency,
+      "price": product.pricing.sale,
+      "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      "itemCondition": "https://schema.org/NewCondition"
+    }
+  };
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '20px', fontFamily: 'sans-serif', direction: 'rtl' }}>
+    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '20px' }}>
       <Head>
         <title>{product.title} | متجر الكويت</title>
-        <meta name="description" content={product.description} />
+        <meta name="description" content={product.description.substring(0, 160)} />
+        {/* إضافة السكيما في الرأس */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+        />
       </Head>
 
-      <Link href="/" style={{ textDecoration: 'none', color: '#333', marginBottom: '20px', display: 'inline-block', fontSize: '1.1rem' }}>
-        &rarr; العودة للمتجر
-      </Link>
-
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', marginTop: '20px' }}>
-        {/* قسم الصور */}
+        {/* الصور */}
         <div style={{ flex: '1 1 400px' }}>
-          <div style={{ border: '1px solid #eee', borderRadius: '10px', overflow: 'hidden' }}>
-            <img 
-              src={selectedImage} 
-              alt={product.title} 
-              style={{ width: '100%', height: 'auto', display: 'block' }} 
-            />
-          </div>
-          
-          {/* معرض الصور المصغرة */}
-          <div style={{ display: 'flex', gap: '10px', marginTop: '15px', overflowX: 'auto', paddingBottom: '5px' }}>
-            {[product.media.main_image, ...product.media.gallery].map((img, index) => (
+          <img src={selectedImage || product.media.main_image} alt={product.title} style={{ width: '100%', borderRadius: '10px' }} />
+          <div style={{ display: 'flex', gap: '10px', marginTop: '10px', overflowX: 'auto' }}>
+            {[product.media.main_image, ...product.media.gallery].map((img, idx) => (
               <img 
-                key={index}
-                src={img}
-                alt={`product-thumb-${index}`}
-                style={{ 
-                  width: '80px', 
-                  height: '80px', 
-                  objectFit: 'cover', 
-                  cursor: 'pointer', 
-                  borderRadius: '5px', 
-                  border: selectedImage === img ? '2px solid #0070f3' : '1px solid #ddd' 
-                }}
+                key={idx} 
+                src={img} 
+                style={{ width: '70px', height: '70px', objectFit: 'cover', cursor: 'pointer', border: selectedImage === img ? '2px solid blue' : '1px solid #ddd' }} 
                 onClick={() => setSelectedImage(img)}
               />
             ))}
           </div>
         </div>
 
-        {/* قسم التفاصيل */}
+        {/* التفاصيل */}
         <div style={{ flex: '1 1 400px' }}>
-          <h1 style={{ marginTop: '0', fontSize: '2rem' }}>{product.title}</h1>
-          <p style={{ color: '#666', fontSize: '0.9rem' }}>القسم: {product.category}</p>
+          <h1>{product.title}</h1>
+          <p style={{ fontSize: '1.5rem', color: '#0070f3', fontWeight: 'bold' }}>
+            {product.pricing.sale} {product.pricing.currency}
+          </p>
           
-          <div style={{ margin: '20px 0' }}>
-            <span style={{ fontSize: '1.8rem', color: '#0070f3', fontWeight: 'bold' }}>
-              {product.pricing.sale} {product.pricing.currency}
-            </span>
-            {product.pricing.regular > product.pricing.sale && (
-              <span style={{ fontSize: '1.2rem', color: '#999', textDecoration: 'line-through', marginRight: '15px' }}>
-                {product.pricing.regular} {product.pricing.currency}
-              </span>
-            )}
-          </div>
-
-          <button style={{
-            width: '100%',
-            padding: '15px',
-            backgroundColor: '#0070f3',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '1.2rem',
-            cursor: 'pointer',
-            fontWeight: 'bold',
-            marginBottom: '30px',
-            transition: 'background 0.3s'
-          }}
-          onMouseOver={(e) => e.target.style.backgroundColor = '#005bb5'}
-          onMouseOut={(e) => e.target.style.backgroundColor = '#0070f3'}
+          <button 
+            onClick={() => addToCart(product)}
+            style={{ width: '100%', padding: '15px', backgroundColor: '#0070f3', color: 'white', border: 'none', borderRadius: '5px', fontSize: '1.2rem', cursor: 'pointer', marginBottom: '15px' }}
           >
             إضافة إلى السلة
           </button>
-          
-          <div style={{ lineHeight: '1.8', color: '#444', backgroundColor: '#f9f9f9', padding: '20px', borderRadius: '8px' }}>
-            <h3 style={{ marginTop: 0 }}>وصف المنتج:</h3>
+
+          <div style={{ background: '#f5f5f5', padding: '20px', borderRadius: '8px' }}>
+            <h3>الوصف:</h3>
             <p>{product.description}</p>
           </div>
         </div>
@@ -98,30 +85,18 @@ export default function ProductPage({ product }) {
   );
 }
 
-// دالة لجلب جميع مسارات المنتجات (IDs) لإنشاء الصفحات بشكل ثابت
 export async function getStaticPaths() {
   const filePath = path.join(process.cwd(), 'data', 'kuwait-products.json');
   const jsonData = fs.readFileSync(filePath, 'utf8');
   const products = JSON.parse(jsonData);
-
-  const paths = products.map((product) => ({
-    params: { id: product.id.toString() },
-  }));
-
+  const paths = products.map((product) => ({ params: { id: product.id.toString() } }));
   return { paths, fallback: false };
 }
 
-// دالة لجلب بيانات المنتج بناءً على الـ ID
 export async function getStaticProps({ params }) {
   const filePath = path.join(process.cwd(), 'data', 'kuwait-products.json');
   const jsonData = fs.readFileSync(filePath, 'utf8');
   const products = JSON.parse(jsonData);
-  
   const product = products.find((p) => p.id.toString() === params.id);
-
-  return {
-    props: {
-      product,
-    },
-  };
+  return { props: { product } };
 }
