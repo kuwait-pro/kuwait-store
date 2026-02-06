@@ -5,7 +5,7 @@ import { useCart } from '../context/CartContext';
 
 export default function Layout({ children }) {
   const router = useRouter();
-  const { cart, toggleCart } = useCart();
+  const { cart } = useCart();
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = (e) => {
@@ -41,7 +41,7 @@ export default function Layout({ children }) {
           </form>
 
           {/* Cart Icon */}
-          <div className="cart-icon-wrapper" onClick={toggleCart}>
+          <div className="cart-icon-wrapper" onClick={() => router.push('/cart')}>
             <span style={{ fontSize: '24px' }}>🛒</span>
             {cart.length > 0 && (
               <span className="cart-count-badge">
