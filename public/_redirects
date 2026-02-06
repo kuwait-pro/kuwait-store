@@ -1,0 +1,7 @@
+# Redirects for Cloudflare Pages
+
+# Redirect www to non-www
+https://www.kuwait-store.com/* https://kuwait-store.com/:splat 301
+
+# SPA fallback
+/* /index.html 200

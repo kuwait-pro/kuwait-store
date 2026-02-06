@@ -58,12 +58,12 @@ export default function Layout({ children }) {
           <button className="menu-close" onClick={() => setMenuOpen(false)}>×</button>
           <ul>
             <li><Link href="/" onClick={() => setMenuOpen(false)}>🏠 الرئيسية</Link></li>
-            <li><Link href="/cart" onClick={() => setMenuOpen(false)}>🛒 السلة ({cart.length})</Link></li>
             <li><Link href="/about" onClick={() => setMenuOpen(false)}>ℹ️ من نحن</Link></li>
+            <li><Link href="/contact" onClick={() => setMenuOpen(false)}>📞 اتصل بنا</Link></li>
             <li><Link href="/shipping" onClick={() => setMenuOpen(false)}>🚚 سياسة الشحن</Link></li>
             <li><Link href="/returns" onClick={() => setMenuOpen(false)}>🔄 سياسة الاسترجاع</Link></li>
             <li><Link href="/privacy" onClick={() => setMenuOpen(false)}>🔒 سياسة الخصوصية</Link></li>
-            <li><a href="https://wa.me/201110760081" target="_blank" rel="noopener noreferrer">📞 تواصل معنا</a></li>
+            <li><Link href="/cart" onClick={() => setMenuOpen(false)}>🛒 السلة ({cart.length})</Link></li>
           </ul>
         </div>
       </nav>
@@ -82,7 +82,9 @@ export default function Layout({ children }) {
           <div>
             <h3 className="footer-heading">روابط هامة</h3>
             <ul className="footer-links" style={{ listStyle: 'none', padding: 0 }}>
+              <li><Link href="/">الرئيسية</Link></li>
               <li><Link href="/about">من نحن</Link></li>
+              <li><Link href="/contact">اتصل بنا</Link></li>
               <li><Link href="/shipping">سياسة الشحن</Link></li>
               <li><Link href="/returns">سياسة الاسترجاع</Link></li>
               <li><Link href="/privacy">سياسة الخصوصية</Link></li>
@@ -90,8 +92,10 @@ export default function Layout({ children }) {
           </div>
           <div>
             <h3 className="footer-heading">تواصل معنا</h3>
-            <p style={{ color: '#ccc' }}>واتساب: 201110760081+</p>
-            <p style={{ color: '#ccc' }}>مدينة الكويت، الكويت</p>
+            <p style={{ color: '#ccc', marginBottom: '8px' }}>📞 جوال: +201110760081</p>
+            <p style={{ color: '#ccc', marginBottom: '8px' }}>📧 ايميل: sherow1982@gmail.com</p>
+            <p style={{ color: '#ccc', marginBottom: '8px' }}>🏢 الإدارة: مصر - الجيزة</p>
+            <p style={{ color: '#ccc' }}>🚚 الشحن: من داخل الكويت</p>
           </div>
         </div>
         <div style={{ textAlign: 'center', marginTop: '30px', borderTop: '1px solid #444', paddingTop: '20px', color: '#888' }}>
