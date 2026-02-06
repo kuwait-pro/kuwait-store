@@ -61,8 +61,8 @@ export function CartProvider({ children }) {
 
   const getCartTotal = () => {
     return cart.reduce((total, item) => {
-      const price = item.pricing.sale || item.pricing.regular;
-      return total + price * item.quantity;
+      const price = parseFloat(item.pricing?.sale || item.pricing?.regular || 0);
+      return total + (price * item.quantity);
     }, 0);
   };
 

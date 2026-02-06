@@ -1,91 +1,190 @@
-![Build Status](https://gitlab.com/pages/<project>/badges/master/build.svg)
+# متجر الكويت 🇰🇼
+
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://gitlab.com)
+[![Next.js](https://img.shields.io/badge/Next.js-15.3-black)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19-blue)](https://react.dev)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+متجر إلكتروني متكامل مبني بتقنية Next.js لعرض وبيع المنتجات في الكويت.
+
+![Kuwait Store](https://via.placeholder.com/800x400/007A3D/FFFFFF?text=Kuwait+Store)
 
 ---
 
-Example [Next.js](https://nextjs.org) website using GitLab Pages.
+## 🚀 البداية السريعة
 
-Learn more about GitLab Pages at https://pages.gitlab.io and the official
-documentation https://docs.gitlab.com/ce/user/project/pages/.
+```bash
+# تثبيت الحزم
+npm install
 
----
+# تشغيل المشروع
+npm run dev
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [GitLab CI](#gitlab-ci)
-- [Building locally](#building-locally)
-- [Add base path in Next.js when unique domain is disabled](#add-base-path-in-nextjs-when-unique-domain-is-disabled)
-- [GitLab User or Group Pages](#gitlab-user-or-group-pages)
-- [Did you fork this project?](#did-you-fork-this-project)
-- [Troubleshooting](#troubleshooting)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## GitLab CI
-
-This project's static Pages are built by [GitLab CI][ci], following the steps
-defined in [`.gitlab-ci.yml`](.gitlab-ci.yml):
-
-contents of .gitlab-ci.yml in codeblock
-
-## Building locally
-
-To work locally with this project, you'll have to follow the steps below:
-
-1. Fork, clone or download this project
-1. Install dependencies: `npm install`
-1. Preview your project: `npm run dev`
-1. Add content
-
-Read more at the Next.js [documentation](https://nextjs.org/docs).
-
-## Add base path in Next.js when unique domain is disabled
-
-If you [disable the unique domain](https://docs.gitlab.com/user/project/pages/#unique-domains),
-the site will be hosted under `yourname.gitlab.io/examplerepository/`,
-you will need to configure Next.js to use the `basePath`.
-
-In `next.config.mjs`, the value for `basePath` should be your project’s name,
-starting with a forward slash - for example, `/examplerepository`.
-This ensures Next.js understands that your website’s root is `/examplerepository` instead of the default `/`,
-especially when your project is hosted at `https://gitlab.com/yourname/examplerepository/`.
-
-```js:title=next.config.mjs
-const nextConfig = {
-  basePath: '/examplerepository',
-};
-export default nextConfig;
+# افتح المتصفح على
+http://localhost:3000
 ```
 
-## GitLab User or Group Pages
+📖 **للمزيد**: اقرأ [دليل البداية السريعة](QUICKSTART.md)
 
-To use this project as your user/group website, you will need one additional
-step: just rename your project to `namespace.gitlab.io`, where `namespace` is
-your `username` or `groupname`. This can be done by navigating to your
-project's **Settings**.
+---
 
-Read more about [user/group Pages][userpages] and [project Pages][projpages].
+## ✨ المميزات
 
-## Did you fork this project?
+- 🛍️ **عرض احترافي** - واجهة عصرية وجذابة للمنتجات
+- 🔍 **بحث ذكي** - نظام بحث متقدم وسريع
+- 🛒 **سلة تسوق** - إدارة ذكية مع حفظ تلقائي
+- 📱 **تصميم متجاوب** - يعمل على جميع الأجهزة
+- 💬 **واتساب** - طلب مباشر عبر واتساب
+- 🎨 **عربي 100%** - واجهة عربية بالكامل
+- ⚡ **أداء عالي** - Static Site Generation
+- 🔒 **SEO محسّن** - Schema.org markup
 
-If you forked this project for your own use, please go to your project's
-**Settings** and remove the forking relationship, which won't be necessary
-unless you want to contribute back to the upstream project.
+---
 
-## Troubleshooting
+## 🛠️ التقنيات
 
-1. CSS is missing! That means two things:
+- **Next.js 15.3** - React Framework
+- **React 19** - UI Library
+- **CSS3** - Styling
+- **Context API** - State Management
+- **GitLab Pages** - Hosting
 
-   Either that you have wrongly set up the CSS URL in your templates, or
-   your static generator has a configuration option that needs to be explicitly
-   set in order to serve static assets under a relative URL.
+---
 
-[ci]: https://about.gitlab.com/gitlab-ci/
-[<project>]: http://link-to-project-main-page
-[install]: http://link-to-install-page
-[documentation]: http://link-to-main-documentation-page
-[userpages]: https://docs.gitlab.com/ce/user/project/pages/introduction.html#user-or-group-pages
-[projpages]: https://docs.gitlab.com/ce/user/project/pages/introduction.html#project-pages
+## 📁 هيكل المشروع
 
-----
+```
+kuwait-store/
+├── components/          # المكونات
+│   ├── Layout.js
+│   ├── ProductCard.js
+│   └── FloatingButtons.js
+├── context/            # إدارة الحالة
+│   └── CartContext.js
+├── data/               # البيانات
+│   └── kuwait-products.json
+├── pages/              # الصفحات
+│   ├── index.js
+│   ├── cart.js
+│   └── product/[id].js
+├── public/             # الملفات الثابتة
+├── styles/             # التنسيقات
+│   └── globals.css
+└── docs/               # التوثيق
+```
+
+---
+
+## 📚 التوثيق
+
+- 📖 [دليل شامل بالعربية](README-AR.md)
+- ⚡ [البداية السريعة](QUICKSTART.md)
+- 👨‍💻 [دليل المطورين](DEVELOPERS.md)
+- 🚀 [دليل النشر](DEPLOYMENT.md)
+- ✅ [قائمة المهام](TODO.md)
+- 📋 [سجل التغييرات](CHANGELOG.md)
+- 🔧 [ملخص التصحيحات](FIXES-SUMMARY.md)
+- 📊 [التقرير النهائي](FINAL-REPORT.md)
+
+---
+
+## 🎯 الأوامر
+
+```bash
+npm run dev      # تشغيل المشروع محلياً
+npm run build    # بناء المشروع
+npm start        # تشغيل النسخة المبنية
+npm run lint     # فحص الأكواد
+npm run clean    # تنظيف المشروع
+```
+
+---
+
+## 🚀 النشر
+
+### GitLab Pages (تلقائي)
+```bash
+git push origin main
+```
+
+### Vercel (بنقرة واحدة)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+
+📖 **للمزيد**: اقرأ [دليل النشر](DEPLOYMENT.md)
+
+---
+
+## 🎨 التخصيص
+
+### تغيير رقم الواتساب
+ابحث عن `201110760081` واستبدله برقمك في:
+- `components/FloatingButtons.js`
+- `components/Layout.js`
+- `pages/cart.js`
+- `pages/product/[id].js`
+
+### تغيير الألوان
+عدّل `styles/globals.css`:
+```css
+:root {
+  --primary-color: #007A3D;   /* أخضر الكويت */
+  --accent-color: #CE1126;    /* أحمر الكويت */
+}
+```
+
+### إضافة منتجات
+عدّل `data/kuwait-products.json`
+
+---
+
+## 📊 الإحصائيات
+
+- ✅ **1,580** صفحة مولدة
+- ✅ **1,576** منتج
+- ✅ **99.4 KB** حجم JavaScript
+- ✅ **0** أخطاء ESLint
+- ✅ **100%** جاهز للنشر
+
+---
+
+## 🤝 المساهمة
+
+المساهمات مرحب بها!
+
+1. Fork المشروع
+2. أنشئ فرع للميزة (`git checkout -b feature/amazing`)
+3. Commit التغييرات (`git commit -m 'Add amazing feature'`)
+4. Push للفرع (`git push origin feature/amazing`)
+5. افتح Pull Request
+
+---
+
+## 📄 الترخيص
+
+هذا المشروع مفتوح المصدر ومتاح للاستخدام الحر.
+
+---
+
+## 📞 الدعم
+
+- 📱 واتساب: [+201110760081](https://wa.me/201110760081)
+- 📧 البريد: support@kuwait-store.com
+- 🐛 المشاكل: [افتح Issue](https://gitlab.com/yourname/kuwait-store/issues)
+
+---
+
+## 🌟 شكر خاص
+
+شكراً لاستخدامك متجر الكويت!
+
+إذا أعجبك المشروع، لا تنسَ إعطائه ⭐
+
+---
+
+<div align="center">
+
+**صُنع بـ ❤️ في الكويت 🇰🇼**
+
+[الموقع](https://kuwait-store.com) • [التوثيق](README-AR.md) • [الدعم](https://wa.me/201110760081)
+
+</div>

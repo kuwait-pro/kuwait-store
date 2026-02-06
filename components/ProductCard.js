@@ -1,12 +1,16 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 
 export default function ProductCard({ product }) {
+  const price = parseFloat(product.pricing?.regular || 0);
+  const salePrice = parseFloat(product.pricing?.sale || 0);
+  const currency = product.pricing?.currency || 'KWD';
+
   return (
     <div className="product-card">
       <div className="product-image-wrapper">
         <img 
-          src={product.media.main_image} 
-          alt={product.title} 
+          src={product.media?.main_image || '/placeholder.png'} 
+          alt={product.title || 'Product'} 
           className="product-image"
         />
       </div>
@@ -14,18 +18,18 @@ export default function ProductCard({ product }) {
         {product.title}
       </h3>
       <div className="product-price-box">
-        {product.pricing.sale < product.pricing.regular ? (
+        {salePrice > 0 && salePrice < price ? (
           <>
             <span className="price-sale">
-              {product.pricing.sale} {product.pricing.currency}
+              {salePrice.toFixed(3)} {currency}
             </span>
             <span className="price-regular">
-              {product.pricing.regular} {product.pricing.currency}
+              {price.toFixed(3)} {currency}
             </span>
           </>
         ) : (
           <span className="price-sale">
-            {product.pricing.regular} {product.pricing.currency}
+            {price.toFixed(3)} {currency}
           </span>
         )}
       </div>

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useCart } from '../context/CartContext';
+import FloatingButtons from './FloatingButtons';
 
 export default function Layout({ children }) {
   const router = useRouter();
@@ -55,6 +56,7 @@ export default function Layout({ children }) {
       {/* Main Content */}
       <main style={{ flex: '1' }}>
         {children}
+        <FloatingButtons />
       </main>
 
       {/* Footer */}

@@ -1,45 +1,39 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import fs from 'fs';
 import path from 'path';
 import Head from 'next/head';
 import ProductCard from '../components/ProductCard';
-import FloatingButtons from '../components/FloatingButtons';
 
 export default function Home({ products }) {
-  // حالة لتحديد عدد المنتجات المعروضة (نبدأ بـ 12 منتج)
   const [visibleCount, setVisibleCount] = useState(12);
   const [filteredProducts, setFilteredProducts] = useState(products);
   const router = useRouter();
   const { search } = router.query;
 
-  // تصفية المنتجات بناءً على البحث
   useEffect(() => {
     if (search) {
       const lowerSearch = search.toLowerCase();
       const filtered = products.filter(p => 
-        p.title.toLowerCase().includes(lowerSearch) || 
-        p.description.toLowerCase().includes(lowerSearch)
+        p.title?.toLowerCase().includes(lowerSearch) || 
+        p.description?.toLowerCase().includes(lowerSearch)
       );
       setFilteredProducts(filtered);
     } else {
       setFilteredProducts(products);
     }
-    // إعادة تعيين عدد المنتجات المعروضة عند تغيير البحث
     setVisibleCount(12);
   }, [search, products]);
 
-  // دالة لزيادة عدد المنتجات المعروضة
   const showMore = () => {
     setVisibleCount((prev) => prev + 12);
   };
 
-  // بيانات السكيما للمتجر (Store Schema)
   const storeSchema = {
     "@context": "https://schema.org",
     "@type": "Store",
     "name": "متجر الكويت",
-    "image": "https://example.com/logo.png", // استبدل برابط الشعار
+    "image": "https://example.com/logo.png",
     "description": "أفضل المنتجات المنزلية والعصرية في الكويت بأسعار مميزة.",
     "telephone": "+201110760081",
     "address": {
@@ -63,7 +57,6 @@ export default function Home({ products }) {
         />
       </Head>
 
-      {/* هيدر بسيط للصفحة الرئيسية */}
       <header className="hero-header">
         <h1 className="hero-title">
           <span>متجر</span> الكويت
@@ -84,6 +77,7 @@ export default function Home({ products }) {
               <div 
                 key={product.id} 
                 onClick={() => router.push(`/product/${product.id}`)} 
+                style={{ cursor: 'pointer' }}
               >
                 <ProductCard product={product} />
               </div>
@@ -103,8 +97,6 @@ export default function Home({ products }) {
           </div>
         )}
       </div>
-      
-      <FloatingButtons />
     </div>
   );
 }

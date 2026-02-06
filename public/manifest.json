@@ -1,0 +1,24 @@
+{
+  "name": "متجر الكويت",
+  "short_name": "متجر الكويت",
+  "description": "أفضل المنتجات المنزلية والعصرية في الكويت",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007A3D",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
