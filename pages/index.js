@@ -41,7 +41,7 @@ export default function Home({ products }) {
     "name": "متجر الكويت",
     "image": "https://example.com/logo.png", // استبدل برابط الشعار
     "description": "أفضل المنتجات المنزلية والعصرية في الكويت بأسعار مميزة.",
-    "telephone": "+96500000000",
+    "telephone": "+201110760081",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "شارع الخليج",

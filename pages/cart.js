@@ -15,7 +15,7 @@ export default function Cart() {
     });
     message += `%0aالإجمالي: ${getCartTotal()} د.ك`;
     
-    window.open(`https://wa.me/96500000000?text=${message}`, '_blank');
+    window.open(`https://wa.me/201110760081?text=${message}`, '_blank');
   };
 
   return (
