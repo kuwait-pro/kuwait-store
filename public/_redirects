@@ -3,5 +3,13 @@
 # Redirect www to non-www
 https://www.kuwait-store.com/* https://kuwait-store.com/:splat 301
 
-# SPA fallback
+# Handle trailing slashes
+/about /about/ 301
+/contact /contact/ 301
+/cart /cart/ 301
+/shipping /shipping/ 301
+/returns /returns/ 301
+/privacy /privacy/ 301
+
+# SPA fallback - must be last
 /* /index.html 200
