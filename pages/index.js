@@ -156,11 +156,11 @@ export default function Home({ products }) {
 export async function getStaticProps() {
   const filePath = path.join(process.cwd(), 'data', 'kuwait-products.json');
   const jsonData = fs.readFileSync(filePath, 'utf8');
-  const products = JSON.parse(jsonData);
+  const allProducts = JSON.parse(jsonData);
 
   return {
     props: {
-      products,
+      products: allProducts,
     },
   };
 }

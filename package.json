@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "node mass-seo.js",
+    "seo": "node mass-seo.js",
     "start": "next start",
     "lint": "next lint",
     "clean": "rmdir /s /q .next out 2>nul || true"
