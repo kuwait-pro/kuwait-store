@@ -16,35 +16,35 @@ export default function Layout({ children }) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', fontFamily: 'Tajawal, sans-serif' }}>
+    <div className="main-container">
       {/* Header */}
-      <header style={{ backgroundColor: '#fff', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', position: 'sticky', top: 0, zIndex: 1000 }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '15px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '15px' }}>
+      <header className="site-header">
+        <div className="header-inner">
           
           {/* Logo */}
-          <Link href="/" style={{ fontSize: '24px', fontWeight: 'bold', color: '#333', textDecoration: 'none' }}>
-            متجر الكويت
+          <Link href="/" className="logo">
+            <span>متجر</span> الكويت
           </Link>
 
           {/* Search Box */}
-          <form onSubmit={handleSearch} style={{ flex: '1', maxWidth: '500px', display: 'flex' }}>
+          <form onSubmit={handleSearch} className="search-form">
             <input 
               type="text" 
               placeholder="ابحث عن منتج..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ width: '100%', padding: '10px', borderRadius: '0 5px 5px 0', border: '1px solid #ddd', borderLeft: 'none', outline: 'none' }}
+              className="search-input"
             />
-            <button type="submit" style={{ padding: '10px 20px', backgroundColor: '#0070f3', color: '#fff', border: 'none', borderRadius: '5px 0 0 5px', cursor: 'pointer' }}>
+            <button type="submit" className="search-btn">
               بحث
             </button>
           </form>
 
           {/* Cart Icon */}
-          <div style={{ position: 'relative', cursor: 'pointer' }} onClick={toggleCart}>
+          <div className="cart-icon-wrapper" onClick={toggleCart}>
             <span style={{ fontSize: '24px' }}>🛒</span>
             {cart.length > 0 && (
-              <span style={{ position: 'absolute', top: '-8px', right: '-8px', backgroundColor: 'red', color: 'white', borderRadius: '50%', padding: '2px 6px', fontSize: '12px' }}>
+              <span className="cart-count-badge">
                 {cart.length}
               </span>
             )}
@@ -53,28 +53,28 @@ export default function Layout({ children }) {
       </header>
 
       {/* Main Content */}
-      <main style={{ flex: '1', backgroundColor: '#f9f9f9' }}>
+      <main style={{ flex: '1' }}>
         {children}
       </main>
 
       {/* Footer */}
-      <footer style={{ backgroundColor: '#333', color: '#fff', padding: '40px 20px', marginTop: 'auto' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '30px' }}>
+      <footer className="site-footer">
+        <div className="footer-grid">
           <div>
-            <h3>عن المتجر</h3>
+            <h3 className="footer-heading">عن المتجر</h3>
             <p style={{ color: '#ccc', lineHeight: '1.6' }}>متجر الكويت الأول لمنتجات المنزل والعناية الشخصية. جودة عالية وأسعار منافسة.</p>
           </div>
           <div>
-            <h3>روابط هامة</h3>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              <li><Link href="/about" style={{ color: '#ccc', textDecoration: 'none' }}>من نحن</Link></li>
-              <li><Link href="/contact" style={{ color: '#ccc', textDecoration: 'none' }}>اتصل بنا</Link></li>
-              <li><Link href="/return-policy" style={{ color: '#ccc', textDecoration: 'none' }}>سياسة الاسترجاع</Link></li>
-              <li><Link href="/shipping-policy" style={{ color: '#ccc', textDecoration: 'none' }}>سياسة الشحن</Link></li>
+            <h3 className="footer-heading">روابط هامة</h3>
+            <ul className="footer-links" style={{ listStyle: 'none', padding: 0 }}>
+              <li><Link href="/about">من نحن</Link></li>
+              <li><Link href="/contact">اتصل بنا</Link></li>
+              <li><Link href="/return-policy">سياسة الاسترجاع</Link></li>
+              <li><Link href="/shipping-policy">سياسة الشحن</Link></li>
             </ul>
           </div>
           <div>
-            <h3>تواصل معنا</h3>
+            <h3 className="footer-heading">تواصل معنا</h3>
             <p style={{ color: '#ccc' }}>واتساب: 201110760081+</p>
           </div>
         </div>

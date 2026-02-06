@@ -64,14 +64,14 @@ export default function Home({ products }) {
       </Head>
 
       {/* هيدر بسيط للصفحة الرئيسية */}
-      <header style={{ textAlign: 'center', padding: '40px 20px', background: '#f8f9fa', marginBottom: '30px', borderRadius: '0 0 20px 20px' }}>
-        <h1 style={{ color: '#000', fontSize: '2.5rem', fontWeight: '800', marginBottom: '10px' }}>
-          <span style={{ color: '#007A3D' }}>متجر</span> الكويت
+      <header className="hero-header">
+        <h1 className="hero-title">
+          <span>متجر</span> الكويت
         </h1>
-        <p style={{ color: '#666', fontSize: '1.1rem' }}>الجودة . التوفير . الأصالة</p>
+        <p className="hero-subtitle">الجودة . التوفير . الأصالة</p>
       </header>
       
-      <div className="products-wrapper" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+      <div className="content-wrapper">
         {search && (
           <h2 style={{ marginBottom: '20px', textAlign: 'right', borderRight: '4px solid #007A3D', paddingRight: '10px' }}>
             نتائج البحث عن: "{search}"
@@ -84,7 +84,6 @@ export default function Home({ products }) {
               <div 
                 key={product.id} 
                 onClick={() => router.push(`/product/${product.id}`)} 
-                className="product-card-container"
               >
                 <ProductCard product={product} />
               </div>
