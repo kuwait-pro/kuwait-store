@@ -1,24 +1,24 @@
-// c:\Users\sherow\Desktop\next-js-kuwait\kuwait-store\pages\product\[id].js
-
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import fs from 'fs';
 import path from 'path';
 import Head from 'next/head';
-import Image from 'next/image';
 import { useCart } from '../../context/CartContext';
 import FloatingButtons from '../../components/FloatingButtons';
 
 export default function ProductDetails({ product }) {
   const router = useRouter();
   const { addToCart } = useCart();
-  const [mainImage, setMainImage] = useState(product.media.main_image);
+  const [mainImage, setMainImage] = useState(product ? product.media.main_image : '');
 
   if (router.isFallback) {
-    return <div>جاري التحميل...</div>;
+    return <div style={{ textAlign: 'center', padding: '50px' }}>جاري التحميل...</div>;
   }
 
-  // سكيما المنتج (Product Schema) لتحسين السيو والنتائج الغنية
+  if (!product) {
+    return <div style={{ textAlign: 'center', padding: '50px' }}>المنتج غير موجود</div>;
+  }
+
   const productSchema = {
     "@context": "https://schema.org/",
     "@type": "Product",
@@ -32,16 +32,15 @@ export default function ProductDetails({ product }) {
     },
     "offers": {
       "@type": "Offer",
-      "url": `https://your-domain.com/product/${product.id}`,
+      "url": `https://kuwait-store.com/product/${product.id}`,
       "priceCurrency": "KWD",
       "price": product.pricing.sale || product.pricing.regular,
-      "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-      "itemCondition": "https://schema.org/NewCondition"
+      "availability": "https://schema.org/InStock"
     }
   };
 
   return (
-    <div className="product-page-container">
+    <div className="product-page-container" style={{ maxWidth: '1200px', margin: '20px auto', padding: '20px' }}>
       <Head>
         <title>{product.title} | متجر الكويت</title>
         <meta name="description" content={product.description.substring(0, 160)} />
@@ -51,17 +50,17 @@ export default function ProductDetails({ product }) {
         />
       </Head>
 
-      <div className="product-details-wrapper">
+      <div className="product-details-wrapper" style={{ display: 'flex', flexWrap: 'wrap', gap: '40px' }}>
         {/* قسم الصور */}
-        <div className="product-gallery">
-          <div className="main-image-frame">
-            <img src={mainImage} alt={product.title} />
+        <div className="product-gallery" style={{ flex: '1', minWidth: '300px' }}>
+          <div className="main-image-frame" style={{ marginBottom: '15px', border: '1px solid #eee', borderRadius: '10px', overflow: 'hidden' }}>
+            <img src={mainImage} alt={product.title} style={{ width: '100%', height: 'auto', display: 'block' }} />
           </div>
-          <div className="thumbnails">
+          <div className="thumbnails" style={{ display: 'flex', gap: '10px', overflowX: 'auto' }}>
             <img 
               src={product.media.main_image} 
               onClick={() => setMainImage(product.media.main_image)} 
-              className={mainImage === product.media.main_image ? 'active' : ''}
+              style={{ width: '70px', height: '70px', objectFit: 'cover', borderRadius: '5px', cursor: 'pointer', border: mainImage === product.media.main_image ? '2px solid #007A3D' : '1px solid #eee' }}
               alt="Main"
             />
             {product.media.gallery.map((img, idx) => (
@@ -69,7 +68,7 @@ export default function ProductDetails({ product }) {
                 key={idx} 
                 src={img} 
                 onClick={() => setMainImage(img)} 
-                className={mainImage === img ? 'active' : ''}
+                style={{ width: '70px', height: '70px', objectFit: 'cover', borderRadius: '5px', cursor: 'pointer', border: mainImage === img ? '2px solid #007A3D' : '1px solid #eee' }}
                 alt={`Gallery ${idx}`}
               />
             ))}
@@ -77,38 +76,39 @@ export default function ProductDetails({ product }) {
         </div>
 
         {/* قسم المعلومات */}
-        <div className="product-info">
-          <h1 className="product-title">{product.title}</h1>
-          <div className="product-category">{product.category}</div>
+        <div className="product-info" style={{ flex: '1', minWidth: '300px' }}>
+          <h1 style={{ fontSize: '2rem', marginBottom: '10px', color: '#333' }}>{product.title}</h1>
+          <div style={{ color: '#888', marginBottom: '20px' }}>{product.category}</div>
           
-          <div className="product-price">
+          <div style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '25px', color: '#007A3D' }}>
             {product.pricing.sale ? (
               <>
-                <span className="sale-price">{product.pricing.sale} د.ك</span>
-                <span className="regular-price">{product.pricing.regular} د.ك</span>
+                <span style={{ color: '#CE1126', marginLeft: '15px' }}>{product.pricing.sale} د.ك</span>
+                <span style={{ textDecoration: 'line-through', color: '#999', fontSize: '1.2rem' }}>{product.pricing.regular} د.ك</span>
               </>
             ) : (
-              <span className="normal-price">{product.pricing.regular} د.ك</span>
+              <span>{product.pricing.regular} د.ك</span>
             )}
           </div>
 
-          <div className="product-description">
+          <div style={{ marginBottom: '30px', lineHeight: '1.6', color: '#555' }}>
             <p>{product.description}</p>
           </div>
 
-          <div className="actions">
+          <div className="actions" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <button 
-              className="add-to-cart-btn"
               onClick={() => {
                 addToCart(product);
                 alert('تمت الإضافة للسلة بنجاح!');
               }}
+              style={{ padding: '15px', backgroundColor: '#000', color: 'white', border: 'none', borderRadius: '5px', fontSize: '1.1rem', cursor: 'pointer', fontWeight: 'bold' }}
             >
               أضف إلى السلة
             </button>
             <button 
               className="whatsapp-order-btn"
-              onClick={() => window.open(`https://wa.me/96500000000?text=مرحباً، أريد طلب المنتج: ${product.title}`, '_blank')}
+              onClick={() => window.open(`https://wa.me/201110760081?text=مرحباً، أريد طلب المنتج: ${product.title}`, '_blank')}
+              style={{ padding: '15px', backgroundColor: '#25D366', color: 'white', border: 'none', borderRadius: '5px', fontSize: '1.1rem', cursor: 'pointer', fontWeight: 'bold' }}
             >
               اطلب عبر واتساب
             </button>

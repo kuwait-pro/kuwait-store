@@ -1,6 +1,8 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 
 export default function FloatingButtons() {
+  const router = useRouter();
   return (
     <div style={{
       position: 'fixed',
@@ -49,7 +51,7 @@ export default function FloatingButtons() {
           cursor: 'pointer',
           fontSize: '24px'
         }}
-        onClick={() => alert('السلة قيد الصيانة حالياً، يرجى الطلب عبر واتساب')}
+        onClick={() => router.push('/cart')}
         title="السلة"
       >
         🛒
