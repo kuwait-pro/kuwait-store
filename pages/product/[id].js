@@ -1,18 +1,25 @@
+// c:\Users\sherow\Desktop\next-js-kuwait\kuwait-store\pages\product\[id].js
+
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import fs from 'fs';
 import path from 'path';
 import Head from 'next/head';
-import Link from 'next/link';
-import { useCart } from '../../context/CartContext'; // استيراد السلة
+import Image from 'next/image';
+import { useCart } from '../../context/CartContext';
+import FloatingButtons from '../../components/FloatingButtons';
 
-export default function ProductPage({ product }) {
-  const [selectedImage, setSelectedImage] = useState(product?.media?.main_image);
-  const { addToCart } = useCart(); // استخدام السلة
+export default function ProductDetails({ product }) {
+  const router = useRouter();
+  const { addToCart } = useCart();
+  const [mainImage, setMainImage] = useState(product.media.main_image);
 
-  if (!product) return <div>المنتج غير موجود</div>;
+  if (router.isFallback) {
+    return <div>جاري التحميل...</div>;
+  }
 
-  // إعداد بيانات السكيما (Schema.org)
-  const schemaData = {
+  // سكيما المنتج (Product Schema) لتحسين السيو والنتائج الغنية
+  const productSchema = {
     "@context": "https://schema.org/",
     "@type": "Product",
     "name": product.title,
@@ -21,66 +28,94 @@ export default function ProductPage({ product }) {
     "sku": product.id,
     "brand": {
       "@type": "Brand",
-      "name": "متجر الكويت"
+      "name": "Kuwait Store"
     },
     "offers": {
       "@type": "Offer",
-      "url": `https://yourstore.com/product/${product.id}`,
-      "priceCurrency": product.pricing.currency,
-      "price": product.pricing.sale,
+      "url": `https://your-domain.com/product/${product.id}`,
+      "priceCurrency": "KWD",
+      "price": product.pricing.sale || product.pricing.regular,
       "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       "itemCondition": "https://schema.org/NewCondition"
     }
   };
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '20px' }}>
+    <div className="product-page-container">
       <Head>
         <title>{product.title} | متجر الكويت</title>
         <meta name="description" content={product.description.substring(0, 160)} />
-        {/* إضافة السكيما في الرأس */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
         />
       </Head>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', marginTop: '20px' }}>
-        {/* الصور */}
-        <div style={{ flex: '1 1 400px' }}>
-          <img src={selectedImage || product.media.main_image} alt={product.title} style={{ width: '100%', borderRadius: '10px' }} />
-          <div style={{ display: 'flex', gap: '10px', marginTop: '10px', overflowX: 'auto' }}>
-            {[product.media.main_image, ...product.media.gallery].map((img, idx) => (
+      <div className="product-details-wrapper">
+        {/* قسم الصور */}
+        <div className="product-gallery">
+          <div className="main-image-frame">
+            <img src={mainImage} alt={product.title} />
+          </div>
+          <div className="thumbnails">
+            <img 
+              src={product.media.main_image} 
+              onClick={() => setMainImage(product.media.main_image)} 
+              className={mainImage === product.media.main_image ? 'active' : ''}
+              alt="Main"
+            />
+            {product.media.gallery.map((img, idx) => (
               <img 
                 key={idx} 
                 src={img} 
-                style={{ width: '70px', height: '70px', objectFit: 'cover', cursor: 'pointer', border: selectedImage === img ? '2px solid blue' : '1px solid #ddd' }} 
-                onClick={() => setSelectedImage(img)}
+                onClick={() => setMainImage(img)} 
+                className={mainImage === img ? 'active' : ''}
+                alt={`Gallery ${idx}`}
               />
             ))}
           </div>
         </div>
 
-        {/* التفاصيل */}
-        <div style={{ flex: '1 1 400px' }}>
-          <h1>{product.title}</h1>
-          <p style={{ fontSize: '1.5rem', color: '#0070f3', fontWeight: 'bold' }}>
-            {product.pricing.sale} {product.pricing.currency}
-          </p>
+        {/* قسم المعلومات */}
+        <div className="product-info">
+          <h1 className="product-title">{product.title}</h1>
+          <div className="product-category">{product.category}</div>
           
-          <button 
-            onClick={() => addToCart(product)}
-            style={{ width: '100%', padding: '15px', backgroundColor: '#0070f3', color: 'white', border: 'none', borderRadius: '5px', fontSize: '1.2rem', cursor: 'pointer', marginBottom: '15px' }}
-          >
-            إضافة إلى السلة
-          </button>
+          <div className="product-price">
+            {product.pricing.sale ? (
+              <>
+                <span className="sale-price">{product.pricing.sale} د.ك</span>
+                <span className="regular-price">{product.pricing.regular} د.ك</span>
+              </>
+            ) : (
+              <span className="normal-price">{product.pricing.regular} د.ك</span>
+            )}
+          </div>
 
-          <div style={{ background: '#f5f5f5', padding: '20px', borderRadius: '8px' }}>
-            <h3>الوصف:</h3>
+          <div className="product-description">
             <p>{product.description}</p>
+          </div>
+
+          <div className="actions">
+            <button 
+              className="add-to-cart-btn"
+              onClick={() => {
+                addToCart(product);
+                alert('تمت الإضافة للسلة بنجاح!');
+              }}
+            >
+              أضف إلى السلة
+            </button>
+            <button 
+              className="whatsapp-order-btn"
+              onClick={() => window.open(`https://wa.me/96500000000?text=مرحباً، أريد طلب المنتج: ${product.title}`, '_blank')}
+            >
+              اطلب عبر واتساب
+            </button>
           </div>
         </div>
       </div>
+      <FloatingButtons />
     </div>
   );
 }
@@ -89,7 +124,11 @@ export async function getStaticPaths() {
   const filePath = path.join(process.cwd(), 'data', 'kuwait-products.json');
   const jsonData = fs.readFileSync(filePath, 'utf8');
   const products = JSON.parse(jsonData);
-  const paths = products.map((product) => ({ params: { id: product.id.toString() } }));
+
+  const paths = products.map((product) => ({
+    params: { id: product.id },
+  }));
+
   return { paths, fallback: false };
 }
 
@@ -97,6 +136,11 @@ export async function getStaticProps({ params }) {
   const filePath = path.join(process.cwd(), 'data', 'kuwait-products.json');
   const jsonData = fs.readFileSync(filePath, 'utf8');
   const products = JSON.parse(jsonData);
-  const product = products.find((p) => p.id.toString() === params.id);
-  return { props: { product } };
+  const product = products.find((p) => p.id === params.id);
+
+  return {
+    props: {
+      product,
+    },
+  };
 }

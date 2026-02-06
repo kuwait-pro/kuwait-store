@@ -1,10 +1,10 @@
-﻿import { useState, useEffect } from 'react';
+﻿﻿import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import fs from 'fs';
 import path from 'path';
 import Head from 'next/head';
 import ProductCard from '../components/ProductCard';
-// import FloatingButtons from '../components/FloatingButtons'; // تم تعليقه لتجنب الأخطاء إذا لم تقم بإنشاء الملف بعد
+import FloatingButtons from '../components/FloatingButtons';
 
 export default function Home({ products }) {
   // حالة لتحديد عدد المنتجات المعروضة (نبدأ بـ 12 منتج)
@@ -34,73 +34,78 @@ export default function Home({ products }) {
     setVisibleCount((prev) => prev + 12);
   };
 
+  // بيانات السكيما للمتجر (Store Schema)
+  const storeSchema = {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "متجر الكويت",
+    "image": "https://example.com/logo.png", // استبدل برابط الشعار
+    "description": "أفضل المنتجات المنزلية والعصرية في الكويت بأسعار مميزة.",
+    "telephone": "+96500000000",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "شارع الخليج",
+      "addressLocality": "مدينة الكويت",
+      "addressRegion": "العاصمة",
+      "postalCode": "12345",
+      "addressCountry": "KW"
+    }
+  };
+
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+    <div className="main-container">
       <Head>
-        <title>متجر الكويت | تسوق أفضل المنتجات</title>
-        <meta name="description" content="متجر الكويت يقدم أفضل المنتجات المنزلية والعناية الشخصية بأسعار مميزة." />
+        <title>متجر الكويت | تسوق بذكاء وأناقة</title>
+        <meta name="description" content="متجر الكويت يقدم تشكيلة واسعة من المنتجات العصرية، أدوات منزلية، وإلكترونيات بتوصيل سريع لجميع مناطق الكويت." />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(storeSchema) }}
+        />
       </Head>
 
-      {search ? (
-        <h2 style={{ marginBottom: '20px', textAlign: 'right' }}>نتائج البحث عن: "{search}"</h2>
-      ) : (
-        <h1 style={{ textAlign: 'center', marginBottom: '30px', color: '#333' }}>أحدث المنتجات</h1>
-      )}
+      {/* هيدر بسيط للصفحة الرئيسية */}
+      <header style={{ textAlign: 'center', padding: '40px 20px', background: '#f8f9fa', marginBottom: '30px', borderRadius: '0 0 20px 20px' }}>
+        <h1 style={{ color: '#000', fontSize: '2.5rem', fontWeight: '800', marginBottom: '10px' }}>
+          <span style={{ color: '#007A3D' }}>متجر</span> الكويت
+        </h1>
+        <p style={{ color: '#666', fontSize: '1.1rem' }}>الجودة . التوفير . الأصالة</p>
+      </header>
       
-      {/* شبكة المنتجات */}
-      {filteredProducts.length > 0 ? (
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', 
-          gap: '20px' 
-        }}>
-          {filteredProducts.slice(0, visibleCount).map((product) => (
-            <div 
-              key={product.id} 
-              onClick={() => router.push(`/product/${product.id}`)} 
-              style={{ cursor: 'pointer' }}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  router.push(`/product/${product.id}`);
-                }
-              }}
-            >
-              <ProductCard product={product} />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div style={{ textAlign: 'center', padding: '50px', fontSize: '1.2rem', color: '#666' }}>
-          لا توجد منتجات تطابق بحثك.
-        </div>
-      )}
+      <div className="products-wrapper" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+        {search && (
+          <h2 style={{ marginBottom: '20px', textAlign: 'right', borderRight: '4px solid #007A3D', paddingRight: '10px' }}>
+            نتائج البحث عن: "{search}"
+          </h2>
+        )}
+        
+        {filteredProducts.length > 0 ? (
+          <div className="products-grid">
+            {filteredProducts.slice(0, visibleCount).map((product) => (
+              <div 
+                key={product.id} 
+                onClick={() => router.push(`/product/${product.id}`)} 
+                className="product-card-container"
+              >
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="no-results">
+            لا توجد منتجات تطابق بحثك.
+          </div>
+        )}
 
-      {/* زر تحميل المزيد يظهر فقط إذا كان هناك منتجات متبقية */}
-      {visibleCount < filteredProducts.length && (
-        <div style={{ textAlign: 'center', marginTop: '40px' }}>
-          <button 
-            onClick={showMore}
-            style={{
-              padding: '10px 30px',
-              fontSize: '16px',
-              backgroundColor: '#0070f3',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              transition: 'background 0.3s'
-            }}
-            onMouseOver={(e) => e.target.style.backgroundColor = '#005bb5'}
-            onMouseOut={(e) => e.target.style.backgroundColor = '#0070f3'}
-          >
-            تحميل المزيد
-          </button>
-        </div>
-      )}
-      {/* <FloatingButtons /> */}
+        {visibleCount < filteredProducts.length && (
+          <div style={{ textAlign: 'center', marginTop: '50px', marginBottom: '50px' }}>
+            <button onClick={showMore} className="load-more-btn">
+              عرض المزيد من المنتجات
+            </button>
+          </div>
+        )}
+      </div>
+      
+      <FloatingButtons />
     </div>
   );
 }
