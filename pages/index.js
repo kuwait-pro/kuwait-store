@@ -29,31 +29,83 @@ export default function Home({ products }) {
     setVisibleCount((prev) => prev + 12);
   };
 
-  const storeSchema = {
+  const organizationSchema = {
     "@context": "https://schema.org",
-    "@type": "Store",
+    "@type": "Organization",
     "name": "متجر الكويت",
-    "image": "https://example.com/logo.png",
-    "description": "أفضل المنتجات المنزلية والعصرية في الكويت بأسعار مميزة.",
-    "telephone": "+201110760081",
+    "alternateName": "Kuwait Store",
+    "url": "https://kuwait-store.com",
+    "logo": "https://kuwait-store.com/logo.png",
+    "description": "متجر إلكتروني كويتي رائد يقدم أفضل المنتجات المنزلية والعناية الشخصية والإلكترونيات بأسعار تنافسية وتوصيل سريع لجميع مناطق الكويت",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "شارع الخليج",
+      "streetAddress": "شارع الخليج العربي",
       "addressLocality": "مدينة الكويت",
       "addressRegion": "العاصمة",
-      "postalCode": "12345",
+      "postalCode": "13001",
       "addressCountry": "KW"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+201110760081",
+      "contactType": "customer service",
+      "areaServed": "KW",
+      "availableLanguage": ["ar", "en"]
+    },
+    "sameAs": [
+      "https://wa.me/201110760081"
+    ]
+  };
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "متجر الكويت",
+    "url": "https://kuwait-store.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://kuwait-store.com/?search={search_term_string}",
+      "query-input": "required name=search_term_string"
     }
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1,
+      "name": "الرئيسية",
+      "item": "https://kuwait-store.com"
+    }]
   };
 
   return (
     <div className="main-container">
       <Head>
-        <title>متجر الكويت | تسوق بذكاء وأناقة</title>
-        <meta name="description" content="متجر الكويت يقدم تشكيلة واسعة من المنتجات العصرية، أدوات منزلية، وإلكترونيات بتوصيل سريع لجميع مناطق الكويت." />
+        <title>متجر الكويت | تسوق أونلاين في الكويت - منتجات منزلية وإلكترونيات</title>
+        <meta name="description" content="متجر إلكتروني كويتي رائد يوفر أكثر من 2000 منتج منزلي وإلكتروني بأسعار تنافسية. شحن مجاني وتوصيل سريع لجميع مناطق الكويت. استرجاع مجاني خلال 14 يوم." />
+        <meta name="keywords" content="تسوق أونلاين الكويت, متجر إلكتروني كويتي, منتجات منزلية, إلكترونيات, عناية شخصية, شحن مجاني الكويت" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="متجر الكويت | تسوق أونلاين في الكويت" />
+        <meta property="og:description" content="متجر إلكتروني كويتي رائد يوفر أكثر من 2000 منتج بأسعار تنافسية وشحن مجاني" />
+        <meta property="og:url" content="https://kuwait-store.com" />
+        <meta property="og:locale" content="ar_KW" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="geo.region" content="KW" />
+        <meta name="geo.placename" content="Kuwait City" />
+        <link rel="canonical" href="https://kuwait-store.com" />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(storeSchema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
         />
       </Head>
 

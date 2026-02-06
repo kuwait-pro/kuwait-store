@@ -8,58 +8,71 @@ export default function Layout({ children }) {
   const router = useRouter();
   const { cart } = useCart();
   const [searchTerm, setSearchTerm] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
       router.push(`/?search=${encodeURIComponent(searchTerm)}`);
+      setMenuOpen(false);
     }
   };
 
   return (
     <div className="main-container">
-      {/* Header */}
       <header className="site-header">
         <div className="header-inner">
-          
-          {/* Logo */}
+          <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="القائمة">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
           <Link href="/" className="logo">
             <span>متجر</span> الكويت
           </Link>
 
-          {/* Search Box */}
-          <form onSubmit={handleSearch} className="search-form">
-            <input 
-              type="text" 
-              placeholder="ابحث عن منتج..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-            <button type="submit" className="search-btn">
-              بحث
-            </button>
-          </form>
-
-          {/* Cart Icon */}
           <div className="cart-icon-wrapper" onClick={() => router.push('/cart')}>
             <span style={{ fontSize: '24px' }}>🛒</span>
             {cart.length > 0 && (
-              <span className="cart-count-badge">
-                {cart.length}
-              </span>
+              <span className="cart-count-badge">{cart.length}</span>
             )}
           </div>
         </div>
+
+        <form onSubmit={handleSearch} className="search-form-mobile">
+          <input 
+            type="text" 
+            placeholder="ابحث عن منتج..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <button type="submit" className="search-btn">🔍</button>
+        </form>
       </header>
 
-      {/* Main Content */}
-      <main style={{ flex: '1' }}>
+      <nav className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
+        <div className="menu-overlay" onClick={() => setMenuOpen(false)}></div>
+        <div className="menu-content">
+          <button className="menu-close" onClick={() => setMenuOpen(false)}>×</button>
+          <ul>
+            <li><Link href="/" onClick={() => setMenuOpen(false)}>🏠 الرئيسية</Link></li>
+            <li><Link href="/cart" onClick={() => setMenuOpen(false)}>🛒 السلة ({cart.length})</Link></li>
+            <li><Link href="/about" onClick={() => setMenuOpen(false)}>ℹ️ من نحن</Link></li>
+            <li><Link href="/shipping" onClick={() => setMenuOpen(false)}>🚚 سياسة الشحن</Link></li>
+            <li><Link href="/returns" onClick={() => setMenuOpen(false)}>🔄 سياسة الاسترجاع</Link></li>
+            <li><Link href="/privacy" onClick={() => setMenuOpen(false)}>🔒 سياسة الخصوصية</Link></li>
+            <li><a href="https://wa.me/201110760081" target="_blank" rel="noopener noreferrer">📞 تواصل معنا</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <main style={{ flex: '1', paddingTop: '140px', paddingBottom: '60px' }}>
         {children}
         <FloatingButtons />
       </main>
 
-      {/* Footer */}
       <footer className="site-footer">
         <div className="footer-grid">
           <div>
@@ -70,18 +83,19 @@ export default function Layout({ children }) {
             <h3 className="footer-heading">روابط هامة</h3>
             <ul className="footer-links" style={{ listStyle: 'none', padding: 0 }}>
               <li><Link href="/about">من نحن</Link></li>
-              <li><Link href="/contact">اتصل بنا</Link></li>
-              <li><Link href="/return-policy">سياسة الاسترجاع</Link></li>
-              <li><Link href="/shipping-policy">سياسة الشحن</Link></li>
+              <li><Link href="/shipping">سياسة الشحن</Link></li>
+              <li><Link href="/returns">سياسة الاسترجاع</Link></li>
+              <li><Link href="/privacy">سياسة الخصوصية</Link></li>
             </ul>
           </div>
           <div>
             <h3 className="footer-heading">تواصل معنا</h3>
             <p style={{ color: '#ccc' }}>واتساب: 201110760081+</p>
+            <p style={{ color: '#ccc' }}>مدينة الكويت، الكويت</p>
           </div>
         </div>
         <div style={{ textAlign: 'center', marginTop: '30px', borderTop: '1px solid #444', paddingTop: '20px', color: '#888' }}>
-          © 2023 متجر الكويت. جميع الحقوق محفوظة.
+          © {new Date().getFullYear()} متجر الكويت. جميع الحقوق محفوظة.
         </div>
       </footer>
     </div>
