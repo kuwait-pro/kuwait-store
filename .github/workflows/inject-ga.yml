@@ -1,7 +1,7 @@
 name: Inject GA4 Everywhere
 
 on:
-  workflow_dispatch: # عشان نشغله بضغطة زرار بس
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -14,14 +14,14 @@ jobs:
       
       - name: Inject Google Analytics
         run: |
-          # الكود اللي هنحشره (HTML صافي)
+          # الكود
           GA_CODE='<script async src="https://www.googletagmanager.com/gtag/js?id=G-RGKTDXQLP8"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-RGKTDXQLP8");</script>'
           
-          # لف على كل ملفات html وازرع الكود قبل </head>
+          # التصحيح هنا: استخدمنا ~ كفاصل عشان الروابط متضربش الأمر
           find . -name "*.html" -print0 | while IFS= read -r -d '' file; do
             if ! grep -q "G-RGKTDXQLP8" "$file"; then
               echo "Injecting into $file..."
-              sed -i "s|</head>|$GA_CODE</head>|g" "$file"
+              sed -i "s~</head>~$GA_CODE</head>~g" "$file"
             else
               echo "Skipping $file (Already injected)"
             fi
