@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["master"] # غير master لاسم الفرع بتاعك لو مختلف (main مثلا)
+    branches: ["master"]
   workflow_dispatch:
 
 permissions:
@@ -25,20 +25,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
+          # شلنا الكاش عشان ميضربش ايرور لو مفيش lock file
 
       - name: Install dependencies
-        run: npm ci
+        # استخدمنا install بدل ci عشان تشتغل من غير lock file
+        run: npm install
 
       - name: Build with Next.js
-        # هنا بنستخدم الأمر اللي عملناه عشان يظبط المسارات
-        # لو معملتش سكريبت gh-build، استخدم: npm run build
         run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out # تأكد ان البيلد بيطلع هنا (حسب next.config.js)
+          path: ./out
 
   deploy:
     environment:
