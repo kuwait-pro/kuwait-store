@@ -2,6 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   output: 'export',
+  basePath: '/kuwait-store',
+  assetPrefix: '/kuwait-store',
   trailingSlash: true,
   images: {
     unoptimized: true,
