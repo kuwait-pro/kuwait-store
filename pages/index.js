@@ -5,7 +5,7 @@ import path from 'path';
 import Head from 'next/head';
 import ProductCard from '../components/ProductCard';
 
-export default function Home({ products }) {
+export default function Home({ products, categories }) {
   const [visibleCount, setVisibleCount] = useState(12);
   const [filteredProducts, setFilteredProducts] = useState(products);
   const router = useRouter();
@@ -115,6 +115,52 @@ export default function Home({ products }) {
         </h1>
         <p className="hero-subtitle">الجودة . التوفير . الأصالة</p>
       </header>
+
+      {/* Banner */}
+      <div style={{ width: '100%', maxWidth: '1200px', margin: '20px auto', padding: '0 20px' }}>
+        <img 
+          src="/banner.jpg" 
+          alt="عروض متجر الكويت" 
+          style={{ width: '100%', height: 'auto', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}
+        />
+      </div>
+
+      {/* Categories */}
+      <div style={{ width: '100%', maxWidth: '1200px', margin: '30px auto', padding: '0 20px' }}>
+        <h2 style={{ fontSize: '1.8rem', marginBottom: '20px', textAlign: 'right', borderRight: '4px solid #007A3D', paddingRight: '15px' }}>
+          تسوق حسب الفئة
+        </h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '15px' }}>
+          {categories.map((cat) => (
+            <div 
+              key={cat}
+              onClick={() => router.push(`/category/${encodeURIComponent(cat)}`)}
+              style={{
+                padding: '20px',
+                background: 'linear-gradient(135deg, #007A3D 0%, #005a2d 100%)',
+                color: 'white',
+                borderRadius: '10px',
+                textAlign: 'center',
+                cursor: 'pointer',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                transition: 'transform 0.2s, box-shadow 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-5px)';
+                e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,0,0,0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+              }}
+            >
+              {cat}
+            </div>
+          ))}
+        </div>
+      </div>
       
       <div className="content-wrapper">
         {search && (
@@ -158,9 +204,12 @@ export async function getStaticProps() {
   const jsonData = fs.readFileSync(filePath, 'utf8');
   const allProducts = JSON.parse(jsonData);
 
+  const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
+
   return {
     props: {
       products: allProducts,
+      categories,
     },
   };
 }

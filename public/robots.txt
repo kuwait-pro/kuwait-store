@@ -32,4 +32,4 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
-Sitemap: https://kuwait-pro.github.io/kuwait-store/sitemap.xml
+Sitemap: https://kuwait-store.storesads.shop/sitemap.xml

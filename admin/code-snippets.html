@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Snippets - إدارة الأكواد</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #007A3D;
+            --danger: #dc3545;
+            --success: #28a745;
+            --warning: #ffc107;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f5f6fa; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, var(--primary), #005a2d); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .header h1 { font-size: 2rem; margin-bottom: 10px; }
+        .toolbar { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .btn { padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #005a2d; transform: translateY(-2px); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-warning { background: var(--warning); color: #000; }
+        .search-box { flex: 1; min-width: 300px; }
+        .search-box input { width: 100%; padding: 12px 20px; border: 2px solid var(--light); border-radius: 8px; font-size: 1rem; }
+        .snippets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .snippet-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: all 0.3s; border-right: 4px solid var(--primary); }
+        .snippet-card:hover { transform: translateY(-5px); box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
+        .snippet-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
+        .snippet-title { font-size: 1.3rem; font-weight: 700; color: var(--dark); }
+        .snippet-actions { display: flex; gap: 8px; }
+        .snippet-actions button { padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: all 0.3s; }
+        .snippet-desc { color: #7f8c8d; margin-bottom: 15px; font-size: 0.95rem; }
+        .snippet-meta { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+        .badge-php { background: #8892BF; color: white; }
+        .badge-js { background: #F7DF1E; color: #000; }
+        .badge-css { background: #264DE4; color: white; }
+        .badge-html { background: #E34C26; color: white; }
+        .badge-active { background: #d4edda; color: #155724; }
+        .badge-inactive { background: #f8d7da; color: #721c24; }
+        .snippet-code { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.9rem; max-height: 150px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; }
+        .modal-content { background: white; max-width: 900px; margin: 30px auto; border-radius: 15px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { padding: 25px 30px; background: linear-gradient(135deg, var(--primary), #005a2d); color: white; border-radius: 15px 15px 0 0; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h2 { font-size: 1.6rem; }
+        .close { font-size: 2rem; cursor: pointer; transition: transform 0.3s; }
+        .close:hover { transform: rotate(90deg); }
+        .modal-body { padding: 30px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark); }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 15px; border: 2px solid var(--light); border-radius: 8px; font-size: 1rem; }
+        .form-group textarea { min-height: 80px; resize: vertical; font-family: 'Courier New', monospace; }
+        .CodeMirror { border: 2px solid var(--light); border-radius: 8px; height: 400px; font-size: 14px; }
+        .toggle-switch { position: relative; display: inline-block; width: 60px; height: 30px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 30px; }
+        .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--success); }
+        input:checked + .slider:before { transform: translateX(30px); }
+        .toast { position: fixed; bottom: 30px; left: 30px; background: var(--dark); color: white; padding: 18px 25px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); display: none; z-index: 2000; }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+        .empty-state { text-align: center; padding: 60px 20px; color: #95a5a6; }
+        .empty-state i { font-size: 5rem; margin-bottom: 20px; }
+        .stats-bar { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: flex; gap: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .stat-item { flex: 1; text-align: center; }
+        .stat-item h3 { font-size: 2rem; color: var(--primary); margin-bottom: 5px; }
+        .stat-item p { color: #7f8c8d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-code"></i> Code Snippets Manager</h1>
+            <p>إدارة الأكواد البرمجية بسهولة - مثل WordPress Code Snippets</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <h3 id="totalSnippets">0</h3>
+                <p>إجمالي الأكواد</p>
+            </div>
+            <div class="stat-item">
+                <h3 id="activeSnippets">0</h3>
+                <p>الأكواد النشطة</p>
+            </div>
+            <div class="stat-item">
+                <h3 id="phpSnippets">0</h3>
+                <p>PHP</p>
+            </div>
+            <div class="stat-item">
+                <h3 id="jsSnippets">0</h3>
+                <p>JavaScript</p>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <button class="btn btn-primary" onclick="openAddModal()">
+                <i class="fas fa-plus"></i> إضافة كود جديد
+            </button>
+            <button class="btn btn-success" onclick="exportSnippets()">
+                <i class="fas fa-download"></i> تصدير
+            </button>
+            <button class="btn btn-warning" onclick="document.getElementById('importFile').click()">
+                <i class="fas fa-upload"></i> استيراد
+            </button>
+            <button class="btn" style="background: #9b59b6; color: white;" onclick="loadExamples()">
+                <i class="fas fa-lightbulb"></i> تحميل أمثلة
+            </button>
+            <input type="file" id="importFile" accept=".json" style="display:none" onchange="importSnippets(event)">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 ابحث عن كود..." onkeyup="filterSnippets()">
+            </div>
+        </div>
+
+        <div id="snippetsContainer" class="snippets-grid"></div>
+    </div>
+
+    <!-- Modal -->
+    <div id="snippetModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">إضافة كود جديد</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="snippetForm" onsubmit="saveSnippet(event)">
+                    <div class="form-group">
+                        <label>اسم الكود *</label>
+                        <input type="text" id="snippetName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>الوصف</label>
+                        <textarea id="snippetDesc" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>نوع الكود *</label>
+                        <select id="snippetType" required onchange="updateCodeMode()">
+                            <option value="php">PHP</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="css">CSS</option>
+                            <option value="html">HTML</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>موقع التنفيذ</label>
+                        <select id="snippetLocation">
+                            <option value="header">Header</option>
+                            <option value="footer">Footer</option>
+                            <option value="admin">Admin Only</option>
+                            <option value="frontend">Frontend Only</option>
+                            <option value="everywhere">Everywhere</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>الأولوية</label>
+                        <input type="number" id="snippetPriority" value="10" min="1" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <span>تفعيل الكود</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="snippetActive" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>الكود البرمجي *</label>
+                        <textarea id="snippetCode" required></textarea>
+                    </div>
+                    <input type="hidden" id="editingIndex">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> حفظ الكود
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/php/php.min.js"></script>
+    <script>
+        let snippets = [];
+        let editor;
+
+        function initEditor() {
+            editor = CodeMirror.fromTextArea(document.getElementById('snippetCode'), {
+                lineNumbers: true,
+                mode: 'php',
+                theme: 'monokai',
+                indentUnit: 4,
+                lineWrapping: true
+            });
+        }
+
+        function updateCodeMode() {
+            const type = document.getElementById('snippetType').value;
+            const modes = { php: 'php', javascript: 'javascript', css: 'css', html: 'htmlmixed' };
+            editor.setOption('mode', modes[type]);
+        }
+
+        function loadSnippets() {
+            const saved = localStorage.getItem('codeSnippets');
+            snippets = saved ? JSON.parse(saved) : [];
+            displaySnippets();
+            updateStats();
+        }
+
+        function displaySnippets() {
+            const container = document.getElementById('snippetsContainer');
+            if (snippets.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <i class="fas fa-code"></i>
+                        <h2>لا توجد أكواد بعد</h2>
+                        <p>ابدأ بإضافة أول كود برمجي</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = snippets.map((s, i) => `
+                <div class="snippet-card">
+                    <div class="snippet-header">
+                        <div class="snippet-title">${s.name}</div>
+                        <div class="snippet-actions">
+                            <button style="background: #3498db; color: white;" onclick="editSnippet(${i})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button style="background: #e74c3c; color: white;" onclick="deleteSnippet(${i})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button style="background: ${s.active ? '#27ae60' : '#95a5a6'}; color: white;" onclick="toggleSnippet(${i})">
+                                <i class="fas fa-power-off"></i>
+                            </button>
+                        </div>
+                    </div>
+                    ${s.description ? `<div class="snippet-desc">${s.description}</div>` : ''}
+                    <div class="snippet-meta">
+                        <span class="badge badge-${s.type}">${s.type.toUpperCase()}</span>
+                        <span class="badge ${s.active ? 'badge-active' : 'badge-inactive'}">
+                            ${s.active ? 'نشط' : 'معطل'}
+                        </span>
+                        <span class="badge" style="background: #ecf0f1; color: #2c3e50;">
+                            <i class="fas fa-map-marker-alt"></i> ${s.location}
+                        </span>
+                        <span class="badge" style="background: #ecf0f1; color: #2c3e50;">
+                            <i class="fas fa-sort-numeric-up"></i> ${s.priority}
+                        </span>
+                    </div>
+                    <div class="snippet-code">${escapeHtml(s.code.substring(0, 200))}${s.code.length > 200 ? '...' : ''}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('totalSnippets').textContent = snippets.length;
+            document.getElementById('activeSnippets').textContent = snippets.filter(s => s.active).length;
+            document.getElementById('phpSnippets').textContent = snippets.filter(s => s.type === 'php').length;
+            document.getElementById('jsSnippets').textContent = snippets.filter(s => s.type === 'javascript').length;
+        }
+
+        function filterSnippets() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = snippets.filter(s => 
+                s.name.toLowerCase().includes(search) || 
+                s.description?.toLowerCase().includes(search) ||
+                s.type.toLowerCase().includes(search)
+            );
+            
+            const container = document.getElementById('snippetsContainer');
+            container.innerHTML = filtered.map((s, i) => {
+                const originalIndex = snippets.indexOf(s);
+                return `
+                    <div class="snippet-card">
+                        <div class="snippet-header">
+                            <div class="snippet-title">${s.name}</div>
+                            <div class="snippet-actions">
+                                <button style="background: #3498db; color: white;" onclick="editSnippet(${originalIndex})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button style="background: #e74c3c; color: white;" onclick="deleteSnippet(${originalIndex})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <button style="background: ${s.active ? '#27ae60' : '#95a5a6'}; color: white;" onclick="toggleSnippet(${originalIndex})">
+                                    <i class="fas fa-power-off"></i>
+                                </button>
+                            </div>
+                        </div>
+                        ${s.description ? `<div class="snippet-desc">${s.description}</div>` : ''}
+                        <div class="snippet-meta">
+                            <span class="badge badge-${s.type}">${s.type.toUpperCase()}</span>
+                            <span class="badge ${s.active ? 'badge-active' : 'badge-inactive'}">
+                                ${s.active ? 'نشط' : 'معطل'}
+                            </span>
+                            <span class="badge" style="background: #ecf0f1; color: #2c3e50;">
+                                <i class="fas fa-map-marker-alt"></i> ${s.location}
+                            </span>
+                        </div>
+                        <div class="snippet-code">${escapeHtml(s.code.substring(0, 200))}${s.code.length > 200 ? '...' : ''}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'إضافة كود جديد';
+            document.getElementById('snippetForm').reset();
+            document.getElementById('editingIndex').value = '';
+            document.getElementById('snippetActive').checked = true;
+            editor.setValue('');
+            document.getElementById('snippetModal').style.display = 'block';
+        }
+
+        function editSnippet(index) {
+            const s = snippets[index];
+            document.getElementById('modalTitle').textContent = 'تعديل الكود';
+            document.getElementById('snippetName').value = s.name;
+            document.getElementById('snippetDesc').value = s.description || '';
+            document.getElementById('snippetType').value = s.type;
+            document.getElementById('snippetLocation').value = s.location;
+            document.getElementById('snippetPriority').value = s.priority;
+            document.getElementById('snippetActive').checked = s.active;
+            editor.setValue(s.code);
+            updateCodeMode();
+            document.getElementById('editingIndex').value = index;
+            document.getElementById('snippetModal').style.display = 'block';
+        }
+
+        function deleteSnippet(index) {
+            if (confirm('هل تريد حذف هذا الكود؟')) {
+                snippets.splice(index, 1);
+                saveToStorage();
+                displaySnippets();
+                updateStats();
+                showToast('تم الحذف بنجاح!', 'success');
+            }
+        }
+
+        function toggleSnippet(index) {
+            snippets[index].active = !snippets[index].active;
+            saveToStorage();
+            displaySnippets();
+            updateStats();
+            showToast(snippets[index].active ? 'تم التفعيل!' : 'تم التعطيل!', 'success');
+        }
+
+        function saveSnippet(event) {
+            event.preventDefault();
+            const editingIndex = document.getElementById('editingIndex').value;
+            
+            const snippet = {
+                id: editingIndex ? snippets[editingIndex].id : Date.now(),
+                name: document.getElementById('snippetName').value,
+                description: document.getElementById('snippetDesc').value,
+                type: document.getElementById('snippetType').value,
+                location: document.getElementById('snippetLocation').value,
+                priority: parseInt(document.getElementById('snippetPriority').value),
+                active: document.getElementById('snippetActive').checked,
+                code: editor.getValue(),
+                created: editingIndex ? snippets[editingIndex].created : new Date().toISOString(),
+                modified: new Date().toISOString()
+            };
+
+            if (editingIndex) {
+                snippets[editingIndex] = snippet;
+                showToast('تم التعديل بنجاح!', 'success');
+            } else {
+                snippets.push(snippet);
+                showToast('تم الإضافة بنجاح!', 'success');
+            }
+
+            saveToStorage();
+            displaySnippets();
+            updateStats();
+            closeModal();
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('codeSnippets', JSON.stringify(snippets));
+        }
+
+        function exportSnippets() {
+            const json = JSON.stringify(snippets, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'code-snippets-' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+            showToast('تم التصدير بنجاح!', 'success');
+        }
+
+        function importSnippets(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        snippets = JSON.parse(e.target.result);
+                        saveToStorage();
+                        displaySnippets();
+                        updateStats();
+                        showToast('تم الاستيراد بنجاح!', 'success');
+                    } catch (error) {
+                        showToast('خطأ في قراءة الملف!', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        async function loadExamples() {
+            if (snippets.length > 0 && !confirm('هل تريد استبدال الأكواد الحالية بالأمثلة؟')) {
+                return;
+            }
+            try {
+                const response = await fetch('snippets-examples.json');
+                snippets = await response.json();
+                saveToStorage();
+                displaySnippets();
+                updateStats();
+                showToast('تم تحميل 8 أمثلة جاهزة!', 'success');
+            } catch (error) {
+                showToast('خطأ في تحميل الأمثلة!', 'error');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('snippetModal').style.display = 'none';
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.onclick = function(event) {
+            if (event.target.id === 'snippetModal') closeModal();
+        }
+
+        window.onload = function() {
+            initEditor();
+            loadSnippets();
+        }
+    </script>
+</body>
+</html>

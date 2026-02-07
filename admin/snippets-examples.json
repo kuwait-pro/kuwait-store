@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "name": "Google Analytics Tracking",
+    "description": "كود تتبع Google Analytics",
+    "type": "javascript",
+    "location": "header",
+    "priority": 10,
+    "active": false,
+    "code": "// Google Analytics\n(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){\n(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),\nm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)\n})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');\n\nga('create', 'UA-XXXXX-Y', 'auto');\nga('send', 'pageview');",
+    "created": "2024-01-01T00:00:00.000Z",
+    "modified": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "name": "Facebook Pixel",
+    "description": "كود تتبع Facebook Pixel",
+    "type": "javascript",
+    "location": "header",
+    "priority": 10,
+    "active": false,
+    "code": "// Facebook Pixel\n!function(f,b,e,v,n,t,s)\n{if(f.fbq)return;n=f.fbq=function(){n.callMethod?\nn.callMethod.apply(n,arguments):n.queue.push(arguments)};\nif(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';\nn.queue=[];t=b.createElement(e);t.async=!0;\nt.src=v;s=b.getElementsByTagName(e)[0];\ns.parentNode.insertBefore(t,s)}(window, document,'script',\n'https://connect.facebook.net/en_US/fbevents.js');\nfbq('init', 'YOUR_PIXEL_ID');\nfbq('track', 'PageView');",
+    "created": "2024-01-01T00:00:00.000Z",
+    "modified": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "name": "Custom CSS - Kuwait Colors",
+    "description": "ألوان مخصصة بألوان علم الكويت",
+    "type": "css",
+    "location": "header",
+    "priority": 5,
+    "active": true,
+    "code": "/* Kuwait Store Custom Colors */\n:root {\n  --kuwait-green: #007A3D;\n  --kuwait-red: #CE1126;\n  --kuwait-black: #000000;\n  --kuwait-white: #FFFFFF;\n}\n\nbody {\n  font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;\n}\n\n.btn-primary {\n  background: var(--kuwait-green) !important;\n  border-color: var(--kuwait-green) !important;\n}\n\n.btn-primary:hover {\n  background: #005a2d !important;\n  border-color: #005a2d !important;\n}",
+    "created": "2024-01-01T00:00:00.000Z",
+    "modified": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 4,
+    "name": "WhatsApp Floating Button",
+    "description": "زر واتساب عائم",
+    "type": "html",
+    "location": "footer",
+    "priority": 20,
+    "active": false,
+    "code": "<style>\n.whatsapp-float {\n  position: fixed;\n  bottom: 20px;\n  left: 20px;\n  background: #25D366;\n  color: white;\n  border-radius: 50px;\n  padding: 15px 20px;\n  box-shadow: 0 4px 15px rgba(0,0,0,0.2);\n  z-index: 1000;\n  text-decoration: none;\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  transition: all 0.3s;\n}\n.whatsapp-float:hover {\n  transform: scale(1.1);\n  box-shadow: 0 6px 20px rgba(0,0,0,0.3);\n}\n</style>\n\n<a href=\"https://wa.me/96512345678\" class=\"whatsapp-float\" target=\"_blank\">\n  <svg width=\"24\" height=\"24\" fill=\"currentColor\" viewBox=\"0 0 24 24\">\n    <path d=\"M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z\"/>\n  </svg>\n  تواصل معنا\n</a>",
+    "created": "2024-01-01T00:00:00.000Z",
+    "modified": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 5,
+    "name": "Smooth Scroll",
+    "description": "تمرير سلس للصفحة",
+    "type": "javascript",
+    "location": "footer",
+    "priority": 15,
+    "active": true,
+    "code": "// Smooth Scroll\ndocument.querySelectorAll('a[href^=\"#\"]').forEach(anchor => {\n  anchor.addEventListener('click', function (e) {\n    e.preventDefault();\n    const target = document.querySelector(this.getAttribute('href'));\n    if (target) {\n      target.scrollIntoView({\n        behavior: 'smooth',\n        block: 'start'\n      });\n    }\n  });\n});",
+    "created": "2024-01-01T00:00:00.000Z",
+    "modified": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 6,
+    "name": "Print Styles",
+    "description": "تنسيقات الطباعة",
+    "type": "css",
+    "location": "header",
+    "priority": 5,
+    "active": true,
+    "code": "/* Print Styles */\n@media print {\n  .no-print,\n  header,\n  footer,\n  .sidebar,\n  button {\n    display: none !important;\n  }\n  \n  body {\n    font-size: 12pt;\n    color: #000;\n    background: #fff;\n  }\n  \n  a[href]:after {\n    content: \" (\" attr(href) \")\";\n  }\n}",
+    "created": "2024-01-01T00:00:00.000Z",
+    "modified": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 7,
+    "name": "Cookie Consent Banner",
+    "description": "إشعار ملفات تعريف الارتباط",
+    "type": "html",
+    "location": "footer",
+    "priority": 25,
+    "active": false,
+    "code": "<style>\n.cookie-banner {\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  background: rgba(0, 0, 0, 0.9);\n  color: white;\n  padding: 20px;\n  text-align: center;\n  z-index: 9999;\n  display: none;\n}\n.cookie-banner.show {\n  display: block;\n}\n.cookie-banner button {\n  background: #007A3D;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  margin: 0 10px;\n  border-radius: 5px;\n  cursor: pointer;\n}\n</style>\n\n<div id=\"cookieBanner\" class=\"cookie-banner\">\n  <p>نستخدم ملفات تعريف الارتباط لتحسين تجربتك. بالمتابعة، فإنك توافق على استخدامنا لملفات تعريف الارتباط.</p>\n  <button onclick=\"acceptCookies()\">موافق</button>\n  <button onclick=\"declineCookies()\">رفض</button>\n</div>\n\n<script>\nif (!localStorage.getItem('cookieConsent')) {\n  document.getElementById('cookieBanner').classList.add('show');\n}\n\nfunction acceptCookies() {\n  localStorage.setItem('cookieConsent', 'accepted');\n  document.getElementById('cookieBanner').classList.remove('show');\n}\n\nfunction declineCookies() {\n  localStorage.setItem('cookieConsent', 'declined');\n  document.getElementById('cookieBanner').classList.remove('show');\n}\n</script>",
+    "created": "2024-01-01T00:00:00.000Z",
+    "modified": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 8,
+    "name": "Back to Top Button",
+    "description": "زر العودة للأعلى",
+    "type": "html",
+    "location": "footer",
+    "priority": 20,
+    "active": true,
+    "code": "<style>\n.back-to-top {\n  position: fixed;\n  bottom: 80px;\n  left: 20px;\n  background: #007A3D;\n  color: white;\n  width: 50px;\n  height: 50px;\n  border-radius: 50%;\n  display: none;\n  align-items: center;\n  justify-content: center;\n  cursor: pointer;\n  box-shadow: 0 4px 15px rgba(0,0,0,0.2);\n  transition: all 0.3s;\n  z-index: 999;\n}\n.back-to-top.show {\n  display: flex;\n}\n.back-to-top:hover {\n  background: #005a2d;\n  transform: translateY(-5px);\n}\n</style>\n\n<div class=\"back-to-top\" id=\"backToTop\" onclick=\"scrollToTop()\">\n  <svg width=\"24\" height=\"24\" fill=\"currentColor\" viewBox=\"0 0 24 24\">\n    <path d=\"M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z\"/>\n  </svg>\n</div>\n\n<script>\nwindow.addEventListener('scroll', function() {\n  const btn = document.getElementById('backToTop');\n  if (window.pageYOffset > 300) {\n    btn.classList.add('show');\n  } else {\n    btn.classList.remove('show');\n  }\n});\n\nfunction scrollToTop() {\n  window.scrollTo({\n    top: 0,\n    behavior: 'smooth'\n  });\n}\n</script>",
+    "created": "2024-01-01T00:00:00.000Z",
+    "modified": "2024-01-01T00:00:00.000Z"
+  }
+]

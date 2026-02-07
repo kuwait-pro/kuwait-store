@@ -1,15 +1,15 @@
-# Redirects for Cloudflare Pages
+# Cloudflare Pages Redirects
 
-# Redirect www to non-www
-https://www.kuwait-store.com/* https://kuwait-store.com/:splat 301
+# Product pages
+/product/:id /product/:id/index.html 200
 
-# Handle trailing slashes
-/about /about/ 301
-/contact /contact/ 301
-/cart /cart/ 301
-/shipping /shipping/ 301
-/returns /returns/ 301
-/privacy /privacy/ 301
+# Static pages
+/about /about/index.html 200
+/contact /contact/index.html 200
+/cart /cart/index.html 200
+/shipping /shipping/index.html 200
+/returns /returns/index.html 200
+/privacy /privacy/index.html 200
 
-# SPA fallback - must be last
-/* /index.html 200
+# Homepage
+/ /index.html 200

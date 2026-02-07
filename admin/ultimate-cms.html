@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة محتوى متقدم - أقوى من WordPress</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .image-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin: 20px 0; }
+        .gallery-item { position: relative; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .gallery-item img { width: 100%; height: 150px; object-fit: cover; }
+        .gallery-item .remove-img { position: absolute; top: 5px; left: 5px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; }
+        .add-image-btn { border: 3px dashed #ddd; padding: 40px; text-align: center; cursor: pointer; border-radius: 10px; transition: all 0.3s; }
+        .add-image-btn:hover { border-color: #007A3D; background: rgba(0,122,61,0.05); }
+        .page-editor { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .editor-toolbar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .editor-toolbar button { padding: 8px 15px; border: 1px solid #ddd; background: white; border-radius: 5px; cursor: pointer; }
+        .editor-toolbar button:hover { background: #007A3D; color: white; }
+        .content-editor { width: 100%; min-height: 300px; padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; font-family: inherit; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd; }
+        .tab { padding: 12px 25px; cursor: pointer; border-radius: 8px 8px 0 0; transition: all 0.3s; }
+        .tab:hover { background: #f8f9fa; }
+        .tab.active { background: #007A3D; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .widget-area { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 15px 0; }
+        .widget { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .color-picker { width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 5px; cursor: pointer; }
+        .banner-preview { width: 100%; max-width: 800px; margin: 20px auto; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .banner-preview img { width: 100%; height: auto; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-crown"></i> CMS Pro</h2>
+            <p>نظام إدارة متقدم</p>
+        </div>
+        <div class="menu-item active" onclick="showSection('dashboard')">
+            <i class="fas fa-chart-line"></i><span>لوحة المعلومات</span>
+        </div>
+        <div class="menu-item" onclick="showSection('products')">
+            <i class="fas fa-box"></i><span>المنتجات</span>
+        </div>
+        <div class="menu-item" onclick="showSection('pages')">
+            <i class="fas fa-file-alt"></i><span>الصفحات</span>
+        </div>
+        <div class="menu-item" onclick="showSection('homepage')">
+            <i class="fas fa-home"></i><span>الصفحة الرئيسية</span>
+        </div>
+        <div class="menu-item" onclick="showSection('banners')">
+            <i class="fas fa-image"></i><span>البانرات</span>
+        </div>
+        <div class="menu-item" onclick="showSection('menus')">
+            <i class="fas fa-bars"></i><span>القوائم</span>
+        </div>
+        <div class="menu-item" onclick="showSection('seo')">
+            <i class="fas fa-search"></i><span>SEO متقدم</span>
+        </div>
+        <div class="menu-item" onclick="showSection('media')">
+            <i class="fas fa-photo-video"></i><span>المكتبة</span>
+        </div>
+        <div class="menu-item" onclick="showSection('settings')">
+            <i class="fas fa-cog"></i><span>الإعدادات</span>
+        </div>
+        <div class="menu-item" onclick="showSection('snippets')">
+            <i class="fas fa-code"></i><span>أكواد مخصصة (Snippets)</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h1 id="pageTitle"><i class="fas fa-chart-line"></i> لوحة المعلومات</h1>
+            <div class="user-info">
+                <button class="btn btn-success" onclick="saveAll()">
+                    <i class="fas fa-save"></i> حفظ كل التغييرات
+                </button>
+                <button class="btn btn-primary" onclick="previewSite()">
+                    <i class="fas fa-eye"></i> معاينة الموقع
+                </button>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(0,122,61,0.1); color: #007A3D;">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <h3 id="totalProducts">0</h3>
+                    <p>المنتجات</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(52,152,219,0.1); color: #3498db;">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3 id="totalPages">5</h3>
+                    <p>الصفحات</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(241,196,15,0.1); color: #f1c40f;">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <h3 id="totalMedia">0</h3>
+                    <p>الوسائط</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(231,76,60,0.1); color: #e74c3c;">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>95/100</h3>
+                    <p>SEO Score</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products -->
+        <div id="products" class="section" style="display:none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-box"></i> إدارة المنتجات</h2>
+                    <button class="btn btn-primary" onclick="openProductModal()">
+                        <i class="fas fa-plus"></i> إضافة منتج
+                    </button>
+                </div>
+                <div id="productsList"></div>
+            </div>
+        </div>
+
+        <!-- Pages -->
+        <div id="pages" class="section" style="display:none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-file-alt"></i> إدارة الصفحات</h2>
+                </div>
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('about')">من نحن</div>
+                    <div class="tab" onclick="switchTab('contact')">اتصل بنا</div>
+                    <div class="tab" onclick="switchTab('shipping')">الشحن</div>
+                    <div class="tab" onclick="switchTab('returns')">الاسترجاع</div>
+                    <div class="tab" onclick="switchTab('privacy')">الخصوصية</div>
+                </div>
+                <div id="pagesContent"></div>
+            </div>
+        </div>
+
+        <!-- Homepage -->
+        <div id="homepage" class="section" style="display:none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-home"></i> تحرير الصفحة الرئيسية</h2>
+                </div>
+                <div class="form-group">
+                    <label>عنوان الصفحة الرئيسية</label>
+                    <input type="text" id="homeTitle" value="متجر الكويت">
+                </div>
+                <div class="form-group">
+                    <label>الشعار</label>
+                    <input type="text" id="homeSlogan" value="الجودة . التوفير . الأصالة">
+                </div>
+                <div class="form-group">
+                    <label>نص الترحيب</label>
+                    <textarea id="homeWelcome" rows="3">مرحباً بكم في متجر الكويت - وجهتكم الأولى للتسوق الإلكتروني</textarea>
+                </div>
+                <h3>الأقسام المعروضة</h3>
+                <div class="form-group">
+                    <label><input type="checkbox" checked> عرض البانر</label><br>
+                    <label><input type="checkbox" checked> عرض الفئات</label><br>
+                    <label><input type="checkbox" checked> عرض المنتجات</label><br>
+                    <label><input type="checkbox"> عرض العروض الخاصة</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Banners -->
+        <div id="banners" class="section" style="display:none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-image"></i> إدارة البانرات</h2>
+                    <button class="btn btn-primary" onclick="addBanner()">
+                        <i class="fas fa-plus"></i> إضافة بانر
+                    </button>
+                </div>
+                <div id="bannersContent"></div>
+            </div>
+        </div>
+
+        <!-- SEO -->
+        <div id="seo" class="section" style="display:none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-search"></i> إعدادات SEO العامة</h2>
+                </div>
+                <div class="form-group">
+                    <label>عنوان الموقع (Site Title)</label>
+                    <input type="text" id="siteTitle" value="متجر الكويت | تسوق أونلاين">
+                </div>
+                <div class="form-group">
+                    <label>وصف الموقع (Site Description)</label>
+                    <textarea id="siteDescription" rows="3">متجر إلكتروني كويتي رائد يوفر أكثر من 2000 منتج بأسعار تنافسية وشحن مجاني</textarea>
+                </div>
+                <div class="form-group">
+                    <label>الكلمات المفتاحية العامة</label>
+                    <input type="text" id="siteKeywords" value="تسوق أونلاين الكويت, متجر إلكتروني, شحن مجاني">
+                </div>
+                
+                <hr style="margin: 30px 0;">
+                <h3><i class="fab fa-google"></i> Google Services</h3>
+                
+                <div class="form-group">
+                    <label>Google Analytics 4 (GA4) Measurement ID</label>
+                    <input type="text" id="ga4Id" placeholder="G-XXXXXXXXXX">
+                    <small>مثال: G-ABC123DEF4</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Google Tag Manager ID</label>
+                    <input type="text" id="gtmId" placeholder="GTM-XXXXXXX">
+                    <small>مثال: GTM-ABC1234</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Google Search Console Verification Code</label>
+                    <input type="text" id="gscVerification" placeholder="google-site-verification=...">
+                    <small>الكود من Google Search Console</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Google Ads Conversion ID</label>
+                    <input type="text" id="googleAdsId" placeholder="AW-XXXXXXXXX">
+                </div>
+                
+                <hr style="margin: 30px 0;">
+                <h3><i class="fab fa-facebook"></i> Facebook & Instagram</h3>
+                
+                <div class="form-group">
+                    <label>Facebook Pixel ID</label>
+                    <input type="text" id="fbPixel" placeholder="123456789012345">
+                </div>
+                
+                <div class="form-group">
+                    <label>Facebook Domain Verification</label>
+                    <input type="text" id="fbDomainVerification" placeholder="facebook-domain-verification=...">
+                </div>
+                
+                <hr style="margin: 30px 0;">
+                <h3><i class="fab fa-snapchat"></i> Snapchat</h3>
+                
+                <div class="form-group">
+                    <label>Snapchat Pixel ID</label>
+                    <input type="text" id="snapchatPixel" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                </div>
+                
+                <hr style="margin: 30px 0;">
+                <h3><i class="fab fa-tiktok"></i> TikTok</h3>
+                
+                <div class="form-group">
+                    <label>TikTok Pixel ID</label>
+                    <input type="text" id="tiktokPixel" placeholder="ABCDEFGHIJKLMNOPQRST">
+                </div>
+                
+                <hr style="margin: 30px 0;">
+                <h3><i class="fab fa-twitter"></i> Twitter (X)</h3>
+                
+                <div class="form-group">
+                    <label>Twitter Pixel ID</label>
+                    <input type="text" id="twitterPixel" placeholder="o1234">
+                </div>
+                
+                <hr style="margin: 30px 0;">
+                <h3><i class="fab fa-pinterest"></i> Pinterest</h3>
+                
+                <div class="form-group">
+                    <label>Pinterest Tag ID</label>
+                    <input type="text" id="pinterestTag" placeholder="1234567890123">
+                </div>
+                
+                <hr style="margin: 30px 0;">
+                <h3><i class="fab fa-linkedin"></i> LinkedIn</h3>
+                
+                <div class="form-group">
+                    <label>LinkedIn Partner ID</label>
+                    <input type="text" id="linkedinId" placeholder="1234567">
+                </div>
+                
+                <hr style="margin: 30px 0;">
+                <h3><i class="fas fa-code"></i> أكواد مخصصة</h3>
+                
+                <div class="form-group">
+                    <label>أكواد في &lt;head&gt; (قبل &lt;/head&gt;)</label>
+                    <textarea id="customHeadCode" rows="5" placeholder="<!-- ضع أي أكواد إضافية هنا -->"></textarea>
+                    <small>للأكواد التي تحتاج للتحميل في الرأس</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>أكواد في &lt;body&gt; (بعد &lt;body&gt;)</label>
+                    <textarea id="customBodyCode" rows="5" placeholder="<!-- ضع أي أكواد إضافية هنا -->"></textarea>
+                    <small>للأكواد التي تحتاج للتحميل في بداية الصفحة</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>أكواد قبل &lt;/body&gt; (نهاية الصفحة)</label>
+                    <textarea id="customFooterCode" rows="5" placeholder="<!-- ضع أي أكواد إضافية هنا -->"></textarea>
+                    <small>للأكواد التي تحتاج للتحميل في نهاية الصفحة</small>
+                </div>
+                
+                <button class="btn btn-success" onclick="saveTracking()" style="width: 100%; padding: 15px; margin-top: 20px;">
+                    <i class="fas fa-save"></i> حفظ جميع أكواد التتبع
+                </button>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div id="settings" class="section" style="display:none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-cog"></i> إعدادات الموقع</h2>
+                </div>
+                <h3>معلومات الاتصال</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>رقم الهاتف</label>
+                        <input type="text" id="phone" value="+201110760081">
+                    </div>
+                    <div class="form-group">
+                        <label>البريد الإلكتروني</label>
+                        <input type="email" id="email" value="sherow1982@gmail.com">
+                    </div>
+                </div>
+                <h3>الألوان</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>اللون الأساسي</label>
+                        <input type="color" class="color-picker" id="primaryColor" value="#007A3D">
+                    </div>
+                    <div class="form-group">
+                        <label>اللون الثانوي</label>
+                        <input type="color" class="color-picker" id="secondaryColor" value="#CE1126">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Snippets -->
+        <div id="snippets" class="section" style="display:none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-code"></i> أكواد مخصصة (Code Snippets)</h2>
+                    <button class="btn btn-primary" onclick="addSnippet()">
+                        <i class="fas fa-plus"></i> إضافة كود جديد
+                    </button>
+                </div>
+                <p style="color: #666; margin-bottom: 20px;">
+                    أضف أكواد JavaScript, CSS, HTML مخصصة للموقع بدون تعديل ملفات المشروع
+                </p>
+                <div id="snippetsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-box"></i> إضافة/تعديل منتج</h2>
+                <span class="close" onclick="closeProductModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="productForm" onsubmit="saveProduct(event)">
+                    <div class="tabs">
+                        <div class="tab active" onclick="switchProductTab('basic')">معلومات أساسية</div>
+                        <div class="tab" onclick="switchProductTab('images')">الصور</div>
+                        <div class="tab" onclick="switchProductTab('seo')">SEO</div>
+                    </div>
+
+                    <!-- Basic Info -->
+                    <div id="basic-tab" class="tab-content active">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>اسم المنتج *</label>
+                                <input type="text" id="pTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label>الفئة *</label>
+                                <input type="text" id="pCategory" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>الوصف</label>
+                            <textarea id="pDescription" rows="5"></textarea>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>السعر (د.ك) *</label>
+                                <input type="number" step="0.001" id="pPrice" required>
+                            </div>
+                            <div class="form-group">
+                                <label>سعر التخفيض</label>
+                                <input type="number" step="0.001" id="pSalePrice">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Images -->
+                    <div id="images-tab" class="tab-content">
+                        <div class="form-group">
+                            <label>الصورة الرئيسية *</label>
+                            <input type="url" id="pMainImage" required>
+                        </div>
+                        <h4>معرض الصور</h4>
+                        <div class="image-gallery" id="imageGallery"></div>
+                        <div class="add-image-btn" onclick="addGalleryImage()">
+                            <i class="fas fa-plus" style="font-size: 2rem; color: #007A3D;"></i>
+                            <p>إضافة صورة للمعرض</p>
+                        </div>
+                    </div>
+
+                    <!-- SEO -->
+                    <div id="seo-tab" class="tab-content">
+                        <div class="form-group">
+                            <label>Focus Keyword</label>
+                            <input type="text" id="pFocusKeyword">
+                        </div>
+                        <div class="form-group">
+                            <label>Meta Title</label>
+                            <input type="text" id="pMetaTitle" maxlength="60">
+                            <small id="pTitleLength">0/60</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Meta Description</label>
+                            <textarea id="pMetaDescription" maxlength="160" rows="3"></textarea>
+                            <small id="pDescLength">0/160</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Keywords إضافية</label>
+                            <input type="text" id="pKeywords" placeholder="كلمة1, كلمة2, كلمة3">
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="pEditIndex">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; margin-top: 20px;">
+                        <i class="fas fa-save"></i> حفظ المنتج
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+    <script src="ultimate-cms.js"></script>
+</body>
+</html>

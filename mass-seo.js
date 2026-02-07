@@ -24,6 +24,9 @@ function slugify(text) {
 const productsPath = path.join(__dirname, 'data', 'kuwait-products.json');
 const products = JSON.parse(fs.readFileSync(productsPath, 'utf8'));
 
+// Get base URL from environment or use default
+const BASE_URL = process.env.SITE_URL || 'https://kuwait-store.storesads.shop';
+
 console.log('🚀 Starting REAL Mass SEO Generation...\n');
 
 // Keyword variations for each product
@@ -43,7 +46,7 @@ products.forEach(product => {
   keywordVariations.forEach(variation => {
     const slug = slugify(product.title + variation.suffix);
     allUrls.push({
-      loc: `https://kuwait-pro.github.io/kuwait-store/product/${product.id}/${slug}`,
+      loc: `${BASE_URL}/product/${product.id}/${slug}`,
       priority: variation.priority,
       product: product
     });
@@ -83,11 +86,11 @@ console.log(`✅ Split into ${chunks.length} sitemap files`);
 let sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>https://kuwait-pro.github.io/kuwait-store/sitemap-main.xml</loc>
+    <loc>${BASE_URL}/sitemap-main.xml</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
 ${chunks.map((_, index) => `  <sitemap>
-    <loc>https://kuwait-pro.github.io/kuwait-store/sitemap-${index + 1}.xml</loc>
+    <loc>${BASE_URL}/sitemap-${index + 1}.xml</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>`).join('\n')}
 </sitemapindex>`;
@@ -98,18 +101,18 @@ fs.writeFileSync(path.join(__dirname, 'public', 'sitemap.xml'), sitemapIndex);
 let mainSitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://kuwait-pro.github.io/kuwait-store/</loc>
+    <loc>${BASE_URL}/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <lastmod>${new Date().toISOString()}</lastmod>
   </url>
   <url>
-    <loc>https://kuwait-pro.github.io/kuwait-store/cart</loc>
+    <loc>${BASE_URL}/cart</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 ${categories.map(cat => `  <url>
-    <loc>https://kuwait-pro.github.io/kuwait-store/?search=${encodeURIComponent(cat)}</loc>
+    <loc>${BASE_URL}/?search=${encodeURIComponent(cat)}</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <lastmod>${new Date().toISOString()}</lastmod>

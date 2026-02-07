@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم الشاملة - متجر الكويت</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #007A3D;
+            --secondary: #CE1126;
+            --success: #28a745;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .sidebar { position: fixed; right: 0; top: 0; width: 280px; height: 100vh; background: var(--dark); color: white; padding: 20px; box-shadow: 0 0 30px rgba(0,0,0,0.3); z-index: 1000; overflow-y: auto; }
+        .sidebar-header { text-align: center; padding: 20px 0; border-bottom: 2px solid rgba(255,255,255,0.1); margin-bottom: 30px; }
+        .sidebar-header h2 { font-size: 1.5rem; margin-bottom: 5px; }
+        .menu-item { padding: 15px 20px; margin: 10px 0; border-radius: 10px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 15px; }
+        .menu-item:hover, .menu-item.active { background: var(--primary); transform: translateX(-5px); }
+        .menu-item i { font-size: 1.2rem; width: 25px; }
+        .main-content { margin-right: 280px; padding: 30px; min-height: 100vh; }
+        .top-bar { background: white; padding: 20px 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .top-bar h1 { color: var(--dark); font-size: 1.8rem; }
+        .section { display: none; }
+        .section.active { display: block; }
+        iframe { width: 100%; height: calc(100vh - 150px); border: none; border-radius: 15px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-right: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>🏪 متجر الكويت</h2>
+            <p>لوحة التحكم الشاملة</p>
+        </div>
+        <div class="menu-item active" onclick="showSection('products')">
+            <i class="fas fa-box"></i>
+            <span>إدارة المنتجات</span>
+        </div>
+        <div class="menu-item" onclick="showSection('snippets')">
+            <i class="fas fa-code"></i>
+            <span>Code Snippets</span>
+        </div>
+        <div class="menu-item" onclick="showSection('seo')">
+            <i class="fas fa-search"></i>
+            <span>إدارة SEO</span>
+        </div>
+        <div class="menu-item" onclick="showSection('cms')">
+            <i class="fas fa-edit"></i>
+            <span>نظام CMS</span>
+        </div>
+        <div class="menu-item" onclick="window.open('../', '_blank')">
+            <i class="fas fa-external-link-alt"></i>
+            <span>عرض الموقع</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h1 id="pageTitle"><i class="fas fa-box"></i> إدارة المنتجات</h1>
+        </div>
+
+        <div id="products" class="section active">
+            <iframe src="index.html"></iframe>
+        </div>
+
+        <div id="snippets" class="section">
+            <iframe src="code-snippets.html"></iframe>
+        </div>
+
+        <div id="seo" class="section">
+            <iframe src="seo-admin.html"></iframe>
+        </div>
+
+        <div id="cms" class="section">
+            <iframe src="ultimate-cms.html"></iframe>
+        </div>
+    </div>
+
+    <script>
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+            
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            event.target.closest('.menu-item').classList.add('active');
+            
+            const titles = {
+                products: '<i class="fas fa-box"></i> إدارة المنتجات',
+                snippets: '<i class="fas fa-code"></i> Code Snippets Manager',
+                seo: '<i class="fas fa-search"></i> إدارة SEO',
+                cms: '<i class="fas fa-edit"></i> نظام CMS المتقدم'
+            };
+            document.getElementById('pageTitle').innerHTML = titles[section];
+        }
+    </script>
+</body>
+</html>

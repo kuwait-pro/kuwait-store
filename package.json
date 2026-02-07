@@ -7,12 +7,19 @@
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build:github": "node build-github.js",
+    "build:cloudflare": "node build-cloudflare.js",
+    "build:gitlab": "node build-gitlab.js",
+    "build:all": "npm run clean && npm run build:github && npm run build:cloudflare && npm run build:gitlab",
     "postbuild": "node mass-seo.js",
     "seo": "node mass-seo.js",
+    "feed": "node generate-feed.js",
     "start": "next start",
+    "start:all": "powershell -ExecutionPolicy Bypass -File .\\start.ps1",
+    "admin": "start admin/dashboard.html",
+    "snippets": "start admin/code-snippets.html",
     "lint": "next lint",
-    "clean": "rmdir /s /q .next out 2>nul || true"
+    "clean": "if exist .next rmdir /s /q .next & if exist out rmdir /s /q out & if exist out-github rmdir /s /q out-github & if exist out-cloudflare rmdir /s /q out-cloudflare & if exist out-gitlab rmdir /s /q out-gitlab"
   },
   "dependencies": {
     "react": "^19.0.0",

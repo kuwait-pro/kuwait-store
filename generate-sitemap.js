@@ -5,23 +5,25 @@ const path = require('path');
 const productsPath = path.join(__dirname, 'data', 'kuwait-products.json');
 const products = JSON.parse(fs.readFileSync(productsPath, 'utf8'));
 
+const BASE_URL = process.env.SITE_URL || 'https://kuwait-store.storesads.shop';
+
 // Generate sitemap
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://kuwait-pro.github.io/kuwait-store/</loc>
+    <loc>${BASE_URL}/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
   </url>
   <url>
-    <loc>https://kuwait-pro.github.io/kuwait-store/cart</loc>
+    <loc>${BASE_URL}/cart</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 ${products.map(product => `  <url>
-    <loc>https://kuwait-pro.github.io/kuwait-store/product/${product.id}</loc>
+    <loc>${BASE_URL}/product/${product.id}</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
@@ -34,4 +36,4 @@ ${products.map(product => `  <url>
 
 // Write sitemap
 fs.writeFileSync(path.join(__dirname, 'public', 'sitemap.xml'), sitemap);
-console.log('✅ Sitemap generated with', products.length, 'products');
+console.log('✅ Sitemap generated with', products.length, 'products for', BASE_URL);

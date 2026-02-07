@@ -73,6 +73,15 @@ export default function Layout({ children }) {
         <FloatingButtons />
       </main>
 
+      {/* Banner before Footer */}
+      <div style={{ width: '100%', maxWidth: '1200px', margin: '20px auto', padding: '0 20px' }}>
+        <img 
+          src="/banner.jpg" 
+          alt="عروض متجر الكويت" 
+          style={{ width: '100%', height: 'auto', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}
+        />
+      </div>
+
       <footer className="site-footer">
         <div className="footer-grid">
           <div>

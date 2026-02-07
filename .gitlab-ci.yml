@@ -1,16 +1,16 @@
 image: node:22.14.0
 
 before_script:
-  - npm ci
+  - npm ci --legacy-peer-deps
 
 pages:
   stage: deploy
   script:
-    - npm run build
-    - cp out/index.html out/404.html
+    - npm run build:gitlab
+    - mv out-gitlab public
   artifacts:
     paths:
-      - out
+      - public
   only:
     - main
     - master
