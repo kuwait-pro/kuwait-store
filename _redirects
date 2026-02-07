@@ -1,0 +1,20 @@
+# Cloudflare Pages Redirects
+
+# XML Files
+/feed.xml /feed.xml 200
+/sitemap.xml /sitemap.xml 200
+/sitemap-*.xml /sitemap-*.xml 200
+
+# Product pages
+/product/* /product/:splat/index.html 200
+
+# Static pages
+/about /about/index.html 200
+/contact /contact/index.html 200
+/cart /cart/index.html 200
+/shipping /shipping/index.html 200
+/returns /returns/index.html 200
+/privacy /privacy/index.html 200
+
+# Homepage
+/ /index.html 200
