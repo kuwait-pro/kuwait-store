@@ -1,0 +1,36 @@
+name: Inject GA4 Everywhere
+
+on:
+  workflow_dispatch: # عشان نشغله بضغطة زرار بس
+
+permissions:
+  contents: write
+
+jobs:
+  inject:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Inject Google Analytics
+        run: |
+          # الكود اللي هنحشره (HTML صافي)
+          GA_CODE='<script async src="https://www.googletagmanager.com/gtag/js?id=G-RGKTDXQLP8"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-RGKTDXQLP8");</script>'
+          
+          # لف على كل ملفات html وازرع الكود قبل </head>
+          find . -name "*.html" -print0 | while IFS= read -r -d '' file; do
+            if ! grep -q "G-RGKTDXQLP8" "$file"; then
+              echo "Injecting into $file..."
+              sed -i "s|</head>|$GA_CODE</head>|g" "$file"
+            else
+              echo "Skipping $file (Already injected)"
+            fi
+          done
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "GA Injector"
+          git config --global user.email "bot@noreply.com"
+          git add .
+          git commit -m "Auto-inject Google Analytics Code" || echo "No changes to commit"
+          git push
